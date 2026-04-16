@@ -567,6 +567,7 @@
 
         .list-header {
             display: grid;
+            text-align: left;
             grid-template-columns: 130px 1fr 80px 1fr 110px 130px 100px 90px;
             gap: 1rem;
             padding: 1rem 1.5rem;
@@ -590,9 +591,13 @@
         .list-row:last-child { border-bottom: none; }
         .list-row:hover { background: var(--bg-primary); }
 
-        .list-matricula { font-weight: 700; }
-        .list-modelo { font-size: 0.85rem; color: var(--text-secondary); }
-        .list-sn { font-size: 0.85rem; }
+        .list-matricula { font-weight: 700; text-align: left; }
+        .list-modelo { font-size: 0.85rem; color: var(--text-secondary); text-align: left; }
+        .list-sn { font-size: 0.85rem; text-align: left; }
+        .list-tipo { text-align: left; }
+        .list-proximo { text-align: left; }
+        .list-estado { text-align: left; }
+        .list-actions { text-align: left; }
 
         @media (max-width: 1200px) {
             .list-header, .list-row {
