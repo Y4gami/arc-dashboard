@@ -1215,7 +1215,8 @@
 
         function toDateInputValue(dateStr) {
             if (!dateStr) return '';
-            return dateStr.split(' ')[0];
+            // Handle both "YYYY-MM-DD HH:MM:SS" and "YYYY-MM-DDTHH:MM:SS"
+            return dateStr.split(' ')[0].split('T')[0];
         }
 
         function renderDashboard() {
