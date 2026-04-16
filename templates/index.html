@@ -463,7 +463,7 @@
             width: 48px; height: 48px;
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
+            overflow: hidden;
         }
 
         .arc-card-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
@@ -1356,7 +1356,7 @@
                 <div class="arc-card">
                     <div class="arc-card-header">
                         <div class="arc-card-left">
-                            <div class="arc-avatar" style="background: #e2e8f0;"><svg width="30" height="30" viewBox="0 0 128 128" fill="#1a202c"><path d="M64 4 L68 18 L100 16 L92 30 L118 36 L96 48 L118 80 L96 92 L118 98 L92 104 L100 118 L68 116 L64 124 L60 116 L28 118 L36 104 L10 98 L32 92 L10 80 L32 48 L10 36 L36 30 L28 16 L60 18 Z M18 50 A6 6 0 1 1 18 64 A6 6 0 1 1 18 50 M18 72 A6 6 0 1 1 18 86 A6 6 0 1 1 18 72 M110 50 A6 6 0 1 1 110 64 A6 6 0 1 1 110 50 M110 72 A6 6 0 1 1 110 86 A6 6 0 1 1 110 72"/></svg></div>
+                            <div class="arc-avatar" style="background: #e2e8f0; display:flex; align-items:center; justify-content:center;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAG5klEQVR4nO2YTUiUaxvHf8/HzPjMh2MilhVqjaBhSSVUEEofCGJWqEgLZyNERNYi6GMX1MJlm2hRkQsXQV+YSKhRkguRFrowFKPQRChNzBnnmZlmnq+zeN+Z6tQ5zqjn9bzgfzUwPPf9/1/3dV/X/7qFt2/fWvwfQ1xrAivFuoC1xrqAtca6gLXGv0qAaZoYhoFlpd6a5H+QT8owTRNJknA6nUiSRCwWQ9M0BEFY8ts1PwHTNFEUBdM0GRkZobOzk5mZGWw2W0onkfYJJBb9q+iYpokgCClFzzRN3G43Q0NDPH36lC9fvrCwsMBvv/2GoigsLi6ueh5pCZBluajwS3ws8Zf4uN1uuru7uX//PpZl8fXrV3Jzc8nJySGTNwzD8L9YJBKJOJZlJTeO2+3G5/ORkZGBJEnJ/0kkEgmCwaBE4rIsEw6HmZmZYWFhgcnJSd6/f4/D4aCzs5OioiLq6+uZm5tbFXnLspLyl2WZeDyOZVl8+/aN9vZ2xsfHKSkpYe/evWzZsgVZlnE4HPT09PDixQvC4TA2m43s7GwkSUpJf9UESC4sCIIgEI1G+fLlC48fP2ZiYgK3243NZkvJ9fT0sLi4SCAQYHp6mrKyMnJzc3G73YyOjtLe3s74+DibN2+mpqaG3NxcZFnGbrfT1tbGq1evmJqaQlEUJElK9g1BEMjLy6OiomLVlNOqkIfvg8zMzCQnJ4ft27fjcrlQVTXlCQQCAcLhMLqu4/V6ycvLo6CggPn5eUZGRggGg6ysrJCVlYXf7yc/P5+8vDwcDgcul4vR0VHevHnD8PAwkUgEXdeT7V3XdcrLy9m/f/+aKa9V4QLfR1e3282OHTvYuXMnOTk5qKqKv78fSZK4desWwWCQmpoaamtrue6665g8d5r2f35H0O1m+Oxp3o5PEI/H0TSNrKws/H4/OTk5rFu3DrvdTlZWFpFIBEEQUBQFWZaZm5tjamqKjIwMsrOzkSQJTdNQVRW73Y6u62iahs1mw2azYbfbkWUZVVXx+XxEo1Gam5t59OgRiqIgSRLRaJS5uTnC4TCapqW1b6yagAQsy0LTNPx+Pzt27GD9+vWoqoqmafT29hKLxcjKyiI/P5/c3Fyys7NZWFhgdnaWqakp5ufnWVxc5MqVK5imSSgUIhaLsbCwkLxB0zTJz89n+/bt5OTkoCgK4XCYvr4+3rx5w9TUFJqmpbVv/KqABGzbxuPxUFlZSX5+PrIsY5omvb29xONxVFXF6/XidrvJzs5GlmVkWcY0TSYmJpibm0PTNHRdT1Z8SZJwuVxkZ2eTn5/Pxo0b2bBhAytWrCAcDjM5OcnIyAgTExPMz8+jqiqmaaZ1j/2qR5CAoijs3r2b/Px8ZFkmFosxMjLCyMgIsViMSCRCJBJB13VkWUaWZRwOB06nE4/Hg9frJTs7G7vdTjgcZmxsjDdv3jA2Nsb8/Dy6rvPmzRtcLhezsz8O6LIsI0kSTqeTvLw88vPzycnJwW63E41G6e/v5/Xr14yNjaFpGrFYLK174FcFpP4Sbrc7OUonJbOwsEB/fz+vX79mcnISXdeZnZ1ldnaWWCyWkvHPBNS/gsvlIisri8LCQgoKCnC5XGRnZ9PX18fLly8ZGRn5ZUH+9Q7S1x7J/4m/v5/29nampqYwTZOvX78Si8UwDGNVBD7bQDgcZnp6mvHxcSKRCPF4nKmpKSKRCLqu/1aAX/WJcDkJBoNMTEwQiUSYm5sjHA4nR+r/D4L/r4Bf5gOxWEIAAAAASUVORK5CYII=" alt="avion" style="width:32px;height:32px;border-radius:4px;"></div>
                             <div class="arc-card-info">
                                 <h3>${arc.matricula}</h3>
                                 <span>${arc.modelo}</span>
