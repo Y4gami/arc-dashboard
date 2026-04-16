@@ -1478,8 +1478,8 @@
             document.getElementById('edit-sn').value = arc.sn;
             document.getElementById('edit-modelo').value = arc.modelo;
             document.getElementById('edit-estado').value = arc.estado;
-            document.getElementById('edit-fecha_arc').value = arc.fecha_arc;
-            document.getElementById('edit-fecha_proximo_arc').value = arc.fecha_proximo_arc;
+            document.getElementById('edit-fecha_arc').value = toDateInputValue(arc.fecha_arc);
+            document.getElementById('edit-fecha_proximo_arc').value = toDateInputValue(arc.fecha_proximo_arc);
             document.getElementById('edit-tipo_arc').value = arc.tipo_arc;
             document.getElementById('edit-modal').classList.remove('hidden');
         }
