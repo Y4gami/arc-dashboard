@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Airplane top view silhouette -->
   <g fill="#1a202c">
-    <!-- Fuselaje -->
-    <ellipse cx="24" cy="24" rx="4" ry="16"/>
-    <!-- Ala izquierda -->
-    <path d="M24 20 L6 26 L8 28 L24 24 Z"/>
-    <!-- Ala derecha -->
-    <path d="M24 20 L42 26 L40 28 L24 24 Z"/>
-    <!-- Motor izquierdo -->
-    <ellipse cx="10" cy="27" rx="3" ry="2"/>
-    <!-- Motor derecho -->
-    <ellipse cx="38" cy="27" rx="3" ry="2"/>
-    <!-- Cola superior -->
-    <path d="M24 8 L20 14 L28 14 Z"/>
-    <!-- Cola inferior -->
-    <path d="M24 40 L20 34 L28 34 Z"/>
-    <!-- Punta de nariz -->
-    <ellipse cx="24" cy="6" rx="2" ry="2"/>
+    <!-- Main body/fuselage -->
+    <ellipse cx="24" cy="24" rx="3" ry="14"/>
+    <!-- Nose -->
+    <ellipse cx="24" cy="9" rx="2.5" ry="3"/>
+    <!-- Tail -->
+    <path d="M24 38 L21 46 L27 46 Z"/>
+    <!-- Left wing -->
+    <path d="M24 18 L6 26 L8 28 L24 23 Z"/>
+    <!-- Right wing -->
+    <path d="M24 18 L42 26 L40 28 L24 23 Z"/>
+    <!-- Left engine -->
+    <ellipse cx="11" cy="27" rx="3" ry="2"/>
+    <!-- Right engine -->
+    <ellipse cx="37" cy="27" rx="3" ry="2"/>
+    <!-- Horizontal stabilizer left -->
+    <path d="M24 38 L16 42 L17 43 L24 40 Z"/>
+    <!-- Horizontal stabilizer right -->
+    <path d="M24 38 L32 42 L31 43 L24 40 Z"/>
   </g>
 </svg>
