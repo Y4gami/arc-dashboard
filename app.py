@@ -1,9 +1,12 @@
 import sqlite3
-from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+import io
+from datetime import datetime
+from flask import Flask, render_template, request, jsonify, send_file
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 DATABASE = 'arc_dashboard.db'
+ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 def get_db():
     conn = sqlite3.connect(DATABASE)
@@ -16,15 +19,20 @@ def init_db():
         CREATE TABLE IF NOT EXISTS arcs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             matricula TEXT UNIQUE NOT NULL,
+            tipo_operacion TEXT NOT NULL,
+            sn TEXT NOT NULL,
             modelo TEXT NOT NULL,
-            flota TEXT NOT NULL,
-            arc_type TEXT NOT NULL,
             fecha_arc TEXT NOT NULL,
+            fecha_proximo_arc TEXT NOT NULL,
+            tipo_arc TEXT NOT NULL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     conn.commit()
     conn.close()
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
@@ -37,18 +45,18 @@ def api_arcs():
         data = request.json
         try:
             conn.execute('''
-                INSERT INTO arcs (matricula, modelo, flota, arc_type, fecha_arc)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (data['matricula'], data['modelo'], data['flota'], 
-                  data['arc_type'], data['fecha_arc']))
+                INSERT INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (data['matricula'], data['tipo_operacion'], data['sn'], data['modelo'],
+                  data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc']))
             conn.commit()
             return jsonify({'status': 'ok'}), 201
         except sqlite3.IntegrityError:
             return jsonify({'status': 'error', 'message': 'Matrícula ya existe'}), 400
         finally:
             conn.close()
-    
-    arcs = conn.execute('SELECT * FROM arcs ORDER BY fecha_arc ASC').fetchall()
+
+    arcs = conn.execute('SELECT * FROM arcs ORDER BY fecha_proximo_arc ASC').fetchall()
     conn.close()
     return jsonify([dict(row) for row in arcs])
 
@@ -58,41 +66,127 @@ def api_arc_edit(arc_id):
     if request.method == 'PUT':
         data = request.json
         conn.execute('''
-            UPDATE arcs SET matricula=?, modelo=?, flota=?, arc_type=?, fecha_arc=?
+            UPDATE arcs SET matricula=?, tipo_operacion=?, sn=?, modelo=?, fecha_arc=?, fecha_proximo_arc=?, tipo_arc=?
             WHERE id=?
-        ''', (data['matricula'], data['modelo'], data['flota'], 
-              data['arc_type'], data['fecha_arc'], arc_id))
+        ''', (data['matricula'], data['tipo_operacion'], data['sn'], data['modelo'],
+              data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc'], arc_id))
         conn.commit()
         conn.close()
         return jsonify({'status': 'ok'})
-    
+
     if request.method == 'DELETE':
         conn.execute('DELETE FROM arcs WHERE id=?', (arc_id,))
         conn.commit()
         conn.close()
         return jsonify({'status': 'ok'})
 
-@app.template_filter('days_until')
-def days_until(date_str):
-    try:
-        fecha = datetime.strptime(date_str, '%Y-%m-%d')
-        return (fecha - datetime.now()).days
-    except:
-        return 0
+@app.route('/api/import', methods=['POST'])
+def api_import():
+    if 'file' not in request.files:
+        return jsonify({'status': 'error', 'message': 'No file'}), 400
 
-@app.template_filter('urgency_class')
-def urgency_class(days):
-    if days < 0:
-        return 'expired'
-    elif days <= 30:
-        return 'critical'
-    elif days <= 90:
-        return 'warning'
-    elif days <= 180:
-        return 'moderate'
-    else:
-        return 'safe'
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'status': 'error', 'message': 'No file selected'}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({'status': 'error', 'message': 'Formato no válido. Usa .xlsx o .xls'}), 400
+
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(file)
+        ws = wb.active
+
+        conn = get_db()
+        imported = 0
+        errors = []
+
+        for row_idx, row in enumerate(ws.iter_rows(min_row=2, values_only=True), start=2):
+            try:
+                matricula = str(row[0]).strip() if row[0] else None
+                tipo_operacion = str(row[1]).strip() if row[1] else None
+                sn = str(row[2]).strip() if row[2] else None
+                modelo = str(row[3]).strip() if row[3] else None
+                fecha_arc = str(row[4]).strip() if row[4] else None
+                fecha_proximo_arc = str(row[5]).strip() if row[5] else None
+                tipo_arc = str(row[6]).strip() if row[6] else None
+
+                if not all([matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc]):
+                    errors.append(f'Fila {row_idx}: datos incompletos')
+                    continue
+
+                # Normalize date formats
+                for date_field in [fecha_arc, fecha_proximo_arc]:
+                    if date_field and isinstance(date_field, str):
+                        for fmt in ['%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y', '%m/%d/%Y']:
+                            try:
+                                dt = datetime.strptime(date_field, fmt)
+                                if date_field == fecha_arc:
+                                    fecha_arc = dt.strftime('%Y-%m-%d')
+                                else:
+                                    fecha_proximo_arc = dt.strftime('%Y-%m-%d')
+                                break
+                            except:
+                                pass
+
+                conn.execute('''
+                    INSERT OR REPLACE INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc))
+                imported += 1
+            except Exception as e:
+                errors.append(f'Fila {row_idx}: {str(e)}')
+
+        conn.commit()
+        conn.close()
+        wb.close()
+
+        return jsonify({'status': 'ok', 'imported': imported, 'errors': errors})
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/api/export', methods=['GET'])
+def api_export():
+    try:
+        import openpyxl
+        from io import BytesIO
+
+        conn = get_db()
+        arcs = conn.execute('SELECT * FROM arcs ORDER BY fecha_proximo_arc ASC').fetchall()
+        conn.close()
+
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = 'ARCs'
+
+        headers = ['MATRÍCULA', 'TIPO OPERACIÓN', 'SN', 'MODELO', 'Fecha ARC', 'Fecha PRÓXIMO ARC', 'TIPO ARC']
+        ws.append(headers)
+
+        for arc in arcs:
+            ws.append([
+                arc['matricula'],
+                arc['tipo_operacion'],
+                arc['sn'],
+                arc['modelo'],
+                arc['fecha_arc'],
+                arc['fecha_proximo_arc'],
+                arc['tipo_arc']
+            ])
+
+        for col in ws.columns:
+            ws.column_dimensions[col[0].column_letter].width = 20
+
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        return send_file(output, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                       as_attachment=True, download_name='ARCs_export.xlsx')
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
