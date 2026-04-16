@@ -1206,12 +1206,16 @@
 
         function formatDate(dateStr) {
             if (!dateStr) return '';
-            const d = new Date(dateStr);
-            if (isNaN(d)) return dateStr;
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
+            // Handle "YYYY-MM-DD HH:MM:SS" format from DB
+            const datePart = dateStr.split(' ')[0];
+            const [year, month, day] = datePart.split('-');
+            if (!day) return dateStr;
             return `${day}-${month}-${year}`;
+        }
+
+        function toDateInputValue(dateStr) {
+            if (!dateStr) return '';
+            return dateStr.split(' ')[0];
         }
 
         function renderDashboard() {
@@ -1662,8 +1666,8 @@
                     <td><input class="edit-input" value="${arc.sn}" data-field="sn" onchange="updateField(${arc.id}, 'sn', this.value)" style="font-family:monospace;"></td>
                     <td>${buildSelect(arc.id, 'modelo', arc.modelo, modelos)}</td>
                     <td>${buildSelect(arc.id, 'tipo_arc', arc.tipo_arc, tipoArcs)}</td>
-                    <td><input class="edit-input" type="date" value="${arc.fecha_arc}" data-field="fecha_arc" onchange="updateField(${arc.id}, 'fecha_arc', this.value)"></td>
-                    <td><input class="edit-input" type="date" value="${arc.fecha_proximo_arc}" data-field="fecha_proximo_arc" onchange="updateField(${arc.id}, 'fecha_proximo_arc', this.value)"></td>
+                    <td><input class="edit-input" type="date" value="${toDateInputValue(arc.fecha_arc)}" data-field="fecha_arc" onchange="updateField(${arc.id}, 'fecha_arc', this.value)"></td>
+                    <td><input class="edit-input" type="date" value="${toDateInputValue(arc.fecha_proximo_arc)}" data-field="fecha_proximo_arc" onchange="updateField(${arc.id}, 'fecha_proximo_arc', this.value)"></td>
                     <td>${buildSelect(arc.id, 'estado', arc.estado, estados)}</td>
                     <td>
                         <div class="cell-actions">
@@ -1759,8 +1763,8 @@
                 <td><input class="edit-input" placeholder="SN" value="" data-field="sn" style="font-family:monospace;"></td>
                 <td>${buildSelect(tempId, 'modelo', modelos[0] || '', modelos)}</td>
                 <td>${buildSelect(tempId, 'tipo_arc', 'Inicial', tipoArcs)}</td>
-                <td><input class="edit-input" type="date" value="${today}" data-field="fecha_arc"></td>
-                <td><input class="edit-input" type="date" value="${nextYear}" data-field="fecha_proximo_arc"></td>
+                <td><input class="edit-input" type="date" value="${toDateInputValue(today)}" data-field="fecha_arc"></td>
+                <td><input class="edit-input" type="date" value="${toDateInputValue(nextYear)}" data-field="fecha_proximo_arc"></td>
                 <td>${buildSelect(tempId, 'estado', 'Sin Iniciar', estados)}</td>
                 <td>
                     <div class="cell-actions">
