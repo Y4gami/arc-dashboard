@@ -201,6 +201,122 @@
 
         .main-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
 
+        /* Editable List View */
+        .edit-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .edit-table th {
+            background: var(--bg-primary);
+            padding: 0.85rem 0.75rem;
+            text-align: left;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .edit-table td {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .edit-table tr:last-child td { border-bottom: none; }
+        .edit-table tr:hover td { background: var(--bg-primary); }
+
+        .edit-input, .edit-select {
+            width: 100%;
+            padding: 0.4rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .edit-input:focus, .edit-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .add-new-option {
+            padding: 0.4rem 0.5rem;
+            border: 1px dashed var(--accent);
+            border-radius: 6px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: var(--accent-light);
+            text-align: center;
+        }
+
+        .add-new-option:hover { background: var(--accent); color: white; }
+
+        .new-value-input {
+            width: 100%;
+            padding: 0.4rem 0.5rem;
+            border: 1px dashed var(--accent);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: var(--accent-light);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .new-value-input:focus {
+            outline: none;
+            border-style: solid;
+        }
+
+        .cell-actions {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+
+        .cell-btn {
+            padding: 0.3rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .cell-btn.save { background: var(--success); color: white; }
+        .cell-btn.cancel { background: var(--text-muted); color: white; }
+        .cell-btn.add { background: var(--accent); color: white; }
+        .cell-btn:hover { opacity: 0.85; }
+
+        .new-row-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent-light);
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            color: var(--accent);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .new-row-btn:hover { background: var(--accent); color: white; }
+
+        .edit-select option { padding: 0.25rem; }
+
         /* View Controls */
         .view-controls {
             display: flex; justify-content: space-between;
@@ -671,6 +787,7 @@
         <div class="main-tabs">
             <button class="main-tab active" onclick="showMainTab('dashboard')">📊 Dashboard</button>
             <button class="main-tab" onclick="showMainTab('entry')">📝 Entrada de Datos</button>
+            <button class="main-tab" onclick="showMainTab('edit')">✏️ Editar Todo</button>
         </div>
 
         <!-- Dashboard -->
@@ -725,6 +842,32 @@
                 </svg>
                 <p>No hay ARCs registrados</p>
             </div>
+        </div>
+
+        <!-- Edit Tab -->
+        <div id="edit-tab" class="hidden">
+            <div style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                Haz clic en cualquier celda para editarla. Desplegables con valores existentes + opción de añadir nuevo.
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="edit-table" id="edit-table">
+                    <thead>
+                        <tr>
+                            <th>MATRÍCULA</th>
+                            <th>TIPO OPERACIÓN</th>
+                            <th>SN</th>
+                            <th>MODELO</th>
+                            <th>TIPO ARC</th>
+                            <th>FECHA ARC</th>
+                            <th>PRÓXIMO ARC</th>
+                            <th>ESTADO</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="edit-tbody"></tbody>
+                </table>
+            </div>
+            <button class="new-row-btn" type="button" onclick="addNewRow()">➕ Añadir nuevo ARC</button>
         </div>
 
         <!-- Entry -->
@@ -906,7 +1049,9 @@
             event.target.classList.add('active');
             document.getElementById('dashboard-tab').classList.toggle('hidden', tab !== 'dashboard');
             document.getElementById('entry-tab').classList.toggle('hidden', tab !== 'entry');
+            document.getElementById('edit-tab').classList.toggle('hidden', tab !== 'edit');
             if (tab === 'dashboard') renderDashboard();
+            if (tab === 'edit') renderEditView();
         }
 
         function setView(view) {
@@ -1441,6 +1586,201 @@
             toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ===== EDIT VIEW =====
+        function renderEditView() {
+            const tbody = document.getElementById('edit-tbody');
+            if (arcs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:2rem; color:var(--text-muted);">No hay ARCs. Añade uno nuevo abajo.</td></tr>';
+                return;
+            }
+
+            const modelos = [...new Set(arcs.map(a => a.modelo))].sort();
+            const operaciones = [...new Set(arcs.map(a => a.tipo_operacion))].sort();
+            const sns = [...new Set(arcs.map(a => a.sn))].sort();
+            const tipoArcs = ['Inicial', 'Primera Prórroga', 'Segunda Prórroga'];
+            const estados = ['Sin Iniciar', 'En progreso', 'Terminado'];
+
+            tbody.innerHTML = arcs.map(arc => buildEditRow(arc, modelos, operaciones, sns, tipoArcs, estados)).join('');
+        }
+
+        function buildEditRow(arc, modelos, operaciones, sns, tipoArcs, estados) {
+            return `
+                <tr data-id="${arc.id}">
+                    <td><input class="edit-input" value="${arc.matricula}" data-field="matricula" onchange="updateField(${arc.id}, 'matricula', this.value)"></td>
+                    <td>${buildSelect(arc.id, 'tipo_operacion', arc.tipo_operacion, operaciones)}</td>
+                    <td>${buildSelect(arc.id, 'sn', arc.sn, sns)}</td>
+                    <td>${buildSelect(arc.id, 'modelo', arc.modelo, modelos)}</td>
+                    <td>${buildSelect(arc.id, 'tipo_arc', arc.tipo_arc, tipoArcs)}</td>
+                    <td><input class="edit-input" type="date" value="${arc.fecha_arc}" data-field="fecha_arc" onchange="updateField(${arc.id}, 'fecha_arc', this.value)"></td>
+                    <td><input class="edit-input" type="date" value="${arc.fecha_proximo_arc}" data-field="fecha_proximo_arc" onchange="updateField(${arc.id}, 'fecha_proximo_arc', this.value)"></td>
+                    <td>${buildSelect(arc.id, 'estado', arc.estado, estados)}</td>
+                    <td>
+                        <div class="cell-actions">
+                            <button class="cell-btn delete" onclick="deleteArc(${arc.id})" title="Eliminar">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function buildSelect(id, field, currentValue, options) {
+            const sanitized = options.map(o => o.replace(/"/g, '&quot;'));
+            const sanitizedCurrent = currentValue.replace(/"/g, '&quot;');
+            return `
+                <select class="edit-select" onchange="handleSelectChange(this, ${id}, '${field}', ${JSON.stringify(sanitized).replace(/"/g, '&quot;')})">
+                    ${sanitized.map(opt => `<option value="${opt}" ${opt === sanitizedCurrent ? 'selected' : ''}>${opt}</option>`).join('')}
+                    <option value="__NEW__">➕ Añadir nuevo...</option>
+                </select>
+            `;
+        }
+
+        function handleSelectChange(selectEl, id, field, options) {
+            const value = selectEl.value;
+            if (value === '__NEW__') {
+                const newVal = prompt(`Nuevo valor para ${field}:`);
+                if (newVal && newVal.trim()) {
+                    const trimmed = newVal.trim();
+                    // Add to options
+                    if (!options.includes(trimmed)) {
+                        const opt = document.createElement('option');
+                        opt.value = trimmed;
+                        opt.textContent = trimmed;
+                        selectEl.insertBefore(opt, selectEl.lastElementChild);
+                    }
+                    selectEl.value = trimmed;
+                    updateField(id, field, trimmed);
+                } else {
+                    selectEl.value = selectEl.dataset.current || options[0];
+                }
+            } else {
+                selectEl.dataset.current = value;
+                updateField(id, field, value);
+            }
+        }
+
+        function updateField(id, field, value) {
+            const arc = arcs.find(a => a.id === id);
+            if (!arc) return;
+            const data = {
+                matricula: arc.matricula,
+                tipo_operacion: arc.tipo_operacion,
+                sn: arc.sn,
+                modelo: arc.modelo,
+                fecha_arc: arc.fecha_arc,
+                fecha_proximo_arc: arc.fecha_proximo_arc,
+                tipo_arc: arc.tipo_arc,
+                estado: arc.estado
+            };
+            data[field] = value;
+
+            fetch(`/api/arcs/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(res => {
+                if (res.ok) {
+                    // Update local state
+                    const idx = arcs.findIndex(a => a.id === id);
+                    if (idx !== -1) arcs[idx][field] = value;
+                    showToast('Guardado', 'success');
+                }
+            });
+        }
+
+        function addNewRow() {
+            const tbody = document.getElementById('edit-tbody');
+            const modelos = [...new Set(arcs.map(a => a.modelo))].sort();
+            const operaciones = [...new Set(arcs.map(a => a.tipo_operacion))].sort();
+            const sns = [...new Set(arcs.map(a => a.sn))].sort();
+            const tipoArcs = ['Inicial', 'Primera Prórroga', 'Segunda Prórroga'];
+            const estados = ['Sin Iniciar', 'En progreso', 'Terminado'];
+
+            const tempId = 'NEW_' + Date.now();
+            const today = new Date().toISOString().split('T')[0];
+            const nextYear = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+            const newRow = {
+                id: tempId,
+                matricula: '',
+                tipo_operacion: operaciones[0] || '',
+                sn: '',
+                modelo: modelos[0] || '',
+                fecha_arc: today,
+                fecha_proximo_arc: nextYear,
+                tipo_arc: 'Inicial',
+                estado: 'Sin Iniciar'
+            };
+
+            const tr = document.createElement('tr');
+            tr.dataset.id = tempId;
+            tr.innerHTML = `
+                <td><input class="edit-input" placeholder="EC-XXX" value="" data-field="matricula"></td>
+                <td>${buildSelect(tempId, 'tipo_operacion', operaciones[0] || '', operaciones)}</td>
+                <td>${buildSelect(tempId, 'sn', sns[0] || '', sns)}</td>
+                <td>${buildSelect(tempId, 'modelo', modelos[0] || '', modelos)}</td>
+                <td>${buildSelect(tempId, 'tipo_arc', 'Inicial', tipoArcs)}</td>
+                <td><input class="edit-input" type="date" value="${today}" data-field="fecha_arc"></td>
+                <td><input class="edit-input" type="date" value="${nextYear}" data-field="fecha_proximo_arc"></td>
+                <td>${buildSelect(tempId, 'estado', 'Sin Iniciar', estados)}</td>
+                <td>
+                    <div class="cell-actions">
+                        <button class="cell-btn add" onclick="saveNewRow(this)">💾</button>
+                        <button class="cell-btn cancel" onclick="cancelNewRow(this)">✕</button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tr.querySelector('[data-field="matricula"]').focus();
+        }
+
+        function saveNewRow(btn) {
+            const tr = btn.closest('tr');
+            const matricula = tr.querySelector('[data-field="matricula"]').value.trim().toUpperCase();
+            if (!matricula) {
+                showToast('Matrícula obligatoria', 'error');
+                return;
+            }
+
+            const data = {
+                matricula: matricula,
+                tipo_operacion: tr.querySelector('[data-field="tipo_operacion"]')?.value || '',
+                sn: tr.querySelector('[data-field="sn"]')?.value || '',
+                modelo: tr.querySelector('[data-field="modelo"]')?.value || '',
+                tipo_arc: tr.querySelector('[data-field="tipo_arc"]')?.value || 'Inicial',
+                fecha_arc: tr.querySelector('[data-field="fecha_arc"]')?.value || '',
+                fecha_proximo_arc: tr.querySelector('[data-field="fecha_proximo_arc"]')?.value || '',
+                estado: tr.querySelector('[data-field="estado"]')?.value || 'Sin Iniciar'
+            };
+
+            fetch('/api/arcs', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(res => {
+                if (res.ok) {
+                    showToast('ARC creado', 'success');
+                    loadArcs();
+                    // Re-render edit view after load
+                    setTimeout(renderEditView, 100);
+                } else {
+                    res.json().then(err => showToast(err.message || 'Error', 'error'));
+                }
+            });
+        }
+
+        function cancelNewRow(btn) {
+            btn.closest('tr').remove();
+        }
+
+        async function deleteArc(id) {
+            if (!confirm('¿Eliminar este ARC?')) return;
+            await fetch(`/api/arcs/${id}`, {method: 'DELETE'});
+            showToast('ARC eliminado', 'success');
+            loadArcs();
+            setTimeout(renderEditView, 100);
         }
 
         // Close modal on overlay click
