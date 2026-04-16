@@ -230,6 +230,21 @@
             vertical-align: middle;
         }
 
+        .edit-table {
+            display: table;
+            layout: fixed;
+        }
+
+        .edit-table th:nth-child(1), .edit-table td:nth-child(1) { width: 110px; }
+        .edit-table th:nth-child(2), .edit-table td:nth-child(2) { width: 160px; }
+        .edit-table th:nth-child(3), .edit-table td:nth-child(3) { width: 90px; }
+        .edit-table th:nth-child(4), .edit-table td:nth-child(4) { width: 130px; }
+        .edit-table th:nth-child(5), .edit-table td:nth-child(5) { width: 120px; }
+        .edit-table th:nth-child(6), .edit-table td:nth-child(6) { width: 120px; }
+        .edit-table th:nth-child(7), .edit-table td:nth-child(7) { width: 120px; }
+        .edit-table th:nth-child(8), .edit-table td:nth-child(8) { width: 110px; }
+        .edit-table th:nth-child(9), .edit-table td:nth-child(9) { width: 60px; }
+
         .edit-table tr:last-child td { border-bottom: none; }
         .edit-table tr:hover td { background: var(--bg-primary); }
 
@@ -288,15 +303,17 @@
         .cell-btn {
             padding: 0.3rem 0.5rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             transition: all 0.2s;
         }
 
         .cell-btn.save { background: var(--success); color: white; }
         .cell-btn.cancel { background: var(--text-muted); color: white; }
         .cell-btn.add { background: var(--accent); color: white; }
+        .cell-btn.delete { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .cell-btn.delete:hover { background: var(--danger); color: white; border-color: var(--danger); }
         .cell-btn:hover { opacity: 0.85; }
 
         .new-row-btn {
@@ -319,23 +336,35 @@
 
         .edit-select {
             border-radius: 20px;
-            padding: 0.3rem 0.6rem;
+            padding: 0.3rem 0.5rem;
             font-size: 0.75rem;
             font-weight: 700;
             border: none;
             cursor: pointer;
             width: 100%;
-            max-width: 140px;
+            max-width: 130px;
         }
 
-        .edit-select.estado { max-width: 120px; }
         .edit-select.estado[value="Sin Iniciar"] { background: #0891b2; color: #fff; }
         .edit-select.estado[value="En progreso"] { background: #ea580c; color: #fff; }
         .edit-select.estado[value="Terminado"] { background: #16a34a; color: #fff; }
 
-        .edit-select.modelo { background: var(--accent-light); color: var(--accent); }
-        .edit-select.tipo_operacion { background: #fef3c7; color: #92400e; }
-        .edit-select.fecha_arc, .edit-select.fecha_proximo_arc { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+        .edit-input {
+            width: 100%;
+            padding: 0.3rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
 
         /* View Controls */
         .view-controls {
@@ -1628,13 +1657,13 @@
         function buildEditRow(arc, modelos, operaciones, sns, tipoArcs, estados) {
             return `
                 <tr data-id="${arc.id}">
-                    <td style="font-weight:600; color: var(--accent);">${arc.matricula}</td>
+                    <td><input class="edit-input" value="${arc.matricula}" data-field="matricula" onchange="updateField(${arc.id}, 'matricula', this.value.toUpperCase())" style="font-weight:700; color:var(--accent);"></td>
                     <td>${buildSelect(arc.id, 'tipo_operacion', arc.tipo_operacion, operaciones)}</td>
-                    <td style="font-family: monospace; color: var(--text-secondary);">${arc.sn}</td>
+                    <td><input class="edit-input" value="${arc.sn}" data-field="sn" onchange="updateField(${arc.id}, 'sn', this.value)" style="font-family:monospace;"></td>
                     <td>${buildSelect(arc.id, 'modelo', arc.modelo, modelos)}</td>
-                    <td style="font-weight:600;">${arc.tipo_arc}</td>
-                    <td>${buildSelect(arc.id, 'fecha_arc', arc.fecha_arc, getDateOptions(arc.fecha_arc))}</td>
-                    <td>${buildSelect(arc.id, 'fecha_proximo_arc', arc.fecha_proximo_arc, getDateOptions(arc.fecha_proximo_arc))}</td>
+                    <td>${buildSelect(arc.id, 'tipo_arc', arc.tipo_arc, tipoArcs)}</td>
+                    <td><input class="edit-input" type="date" value="${arc.fecha_arc}" data-field="fecha_arc" onchange="updateField(${arc.id}, 'fecha_arc', this.value)"></td>
+                    <td><input class="edit-input" type="date" value="${arc.fecha_proximo_arc}" data-field="fecha_proximo_arc" onchange="updateField(${arc.id}, 'fecha_proximo_arc', this.value)"></td>
                     <td>${buildSelect(arc.id, 'estado', arc.estado, estados)}</td>
                     <td>
                         <div class="cell-actions">
@@ -1643,18 +1672,6 @@
                     </td>
                 </tr>
             `;
-        }
-
-        function getDateOptions(current) {
-            // Generate a range of dates around current for the dropdown
-            const dates = [];
-            const currentDate = new Date(current);
-            for (let i = -30; i <= 365; i++) {
-                const d = new Date(currentDate);
-                d.setDate(d.getDate() + i);
-                dates.push(d.toISOString().split('T')[0]);
-            }
-            return dates;
         }
 
         function buildSelect(id, field, currentValue, options) {
@@ -1737,13 +1754,13 @@
             const tr = document.createElement('tr');
             tr.dataset.id = tempId;
             tr.innerHTML = `
-                <td><input class="edit-input" placeholder="EC-XXX" value="" data-field="matricula" style="font-weight:600; color:var(--accent);"></td>
+                <td><input class="edit-input" placeholder="EC-XXX" value="" data-field="matricula" style="font-weight:700; color:var(--accent);" autofocus></td>
                 <td>${buildSelect(tempId, 'tipo_operacion', operaciones[0] || '', operaciones)}</td>
                 <td><input class="edit-input" placeholder="SN" value="" data-field="sn" style="font-family:monospace;"></td>
                 <td>${buildSelect(tempId, 'modelo', modelos[0] || '', modelos)}</td>
-                <td style="font-weight:600;">Inicial</td>
-                <td>${buildSelect(tempId, 'fecha_arc', today, getDateOptions(today))}</td>
-                <td>${buildSelect(tempId, 'fecha_proximo_arc', nextYear, getDateOptions(nextYear))}</td>
+                <td>${buildSelect(tempId, 'tipo_arc', 'Inicial', tipoArcs)}</td>
+                <td><input class="edit-input" type="date" value="${today}" data-field="fecha_arc"></td>
+                <td><input class="edit-input" type="date" value="${nextYear}" data-field="fecha_proximo_arc"></td>
                 <td>${buildSelect(tempId, 'estado', 'Sin Iniciar', estados)}</td>
                 <td>
                     <div class="cell-actions">
@@ -1784,7 +1801,6 @@
                 if (res.ok) {
                     showToast('ARC creado', 'success');
                     loadArcs();
-                    // Re-render edit view after load
                     setTimeout(renderEditView, 100);
                 } else {
                     res.json().then(err => showToast(err.message || 'Error', 'error'));
