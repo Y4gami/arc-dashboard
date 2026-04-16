@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --critical: #dc2626;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tab:hover:not(.active) {
+            border-color: var(--accent);
+        }
+
+        .form-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            max-width: 600px;
+        }
+
+        .form-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        input, select {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .heatmap-section {
+            margin-top: 2rem;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .arc-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .arc-card.expired::before { background: var(--critical); }
+        .arc-card.critical::before { background: var(--danger); }
+        .arc-card.warning::before { background: var(--warning); }
+        .arc-card.moderate::before { background: #eab308; }
+        .arc-card.safe::before { background: var(--success); }
+
+        .arc-card.expired { border-color: var(--critical); opacity: 0.7; }
+        .arc-card.critical { border-color: var(--danger); }
+        .arc-card.warning { border-color: var(--warning); }
+        .arc-card.moderate { border-color: #eab308; }
+        .arc-card.safe { border-color: var(--success); }
+
+        .arc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .matricula {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .type-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-inicial { background: #dbeafe; color: #1e40af; }
+        .type-primera { background: #fef3c7; color: #92400e; }
+        .type-segunda { background: #fce7f3; color: #9d174d; }
+
+        [data-theme="dark"] .type-inicial { background: #1e3a5f; color: #93c5fd; }
+        [data-theme="dark"] .type-primera { background: #451a03; color: #fcd34d; }
+        [data-theme="dark"] .type-segunda { background: #4a044e; color: #f9a8d4; }
+
+        .arc-detail {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0.3rem 0;
+        }
+
+        .days-left {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .expired .days-left { background: #fef2f2; color: var(--critical); }
+        .critical .days-left { background: #fef2f2; color: var(--danger); }
+        .warning .days-left { background: #fef9c3; color: #a16207; }
+        .moderate .days-left { background: #fef9c3; color: #a16207; }
+        .safe .days-left { background: #f0fdf4; color: #15803d; }
+
+        [data-theme="dark"] .expired .days-left { background: #450a0a; color: #fca5a5; }
+        [data-theme="dark"] .critical .days-left { background: #450a0a; color: #fca5a5; }
+        [data-theme="dark"] .warning .days-left { background: #422006; color: #fcd34d; }
+        [data-theme="dark"] .moderate .days-left { background: #422006; color: #fcd34d; }
+        [data-theme="dark"] .safe .days-left { background: #052e16; color: #86efac; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .stat.critical .stat-value { color: var(--danger); }
+        .stat.warning .stat-value { color: var(--warning); }
+        .stat.safe .stat-value { color: var(--success); }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0.75rem; }
+            h1 { font-size: 1.25rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .heatmap-grid { grid-template-columns: 1fr; }
+            .arc-card { padding: 1rem; }
+        }
+
+        [data-theme="dark"] .btn-primary:hover { background: #1d4ed8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛩️ ARC Dashboard</h1>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text">Oscuro</span>
+            </button>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('entry')">📝 Entrada de Datos</button>
+            <button class="tab" onclick="showTab('heatmap')">📊 Mapa de Calor</button>
+        </div>
+
+        <div id="entry-tab">
+            <div class="form-card">
+                <div class="form-title">Nuevo ARC</div>
+                <form id="arc-form" onsubmit="submitArc(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Matrícula *</label>
+                            <input type="text" id="matricula" placeholder="EC-XXX" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo *</label>
+                            <input type="text" id="modelo" placeholder="A320-200" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Flota *</label>
+                            <input type="text" id="flota" placeholder="Flota Alpha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de ARC *</label>
+                            <select id="arc_type" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Inicial">ARC Inicial</option>
+                                <option value="Primera Prórroga">ARC Primera Prórroga</option>
+                                <option value="Segunda Prórroga">ARC Segunda Prórroga</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label>Fecha próximo ARC *</label>
+                            <input type="date" id="fecha_arc" required>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-primary">Agregar ARC</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="heatmap-tab" style="display: none;">
+            <div class="stats-bar" id="stats-bar"></div>
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+            document.getElementById('theme-text').textContent = isDark ? 'Oscuro' : 'Claro';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+                document.getElementById('theme-icon').textContent = saved === 'dark' ? '☀️' : '🌙';
+                document.getElementById('theme-text').textContent = saved === 'dark' ? 'Claro' : 'Oscuro';
+            }
+            loadArcs();
+        });
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('entry-tab').style.display = tab === 'entry' ? 'block' : 'none';
+            document.getElementById('heatmap-tab').style.display = tab === 'heatmap' ? 'block' : 'none';
+            if (tab === 'heatmap') loadArcs();
+        }
+
+        async function submitArc(e) {
+            e.preventDefault();
+            const data = {
+                matricula: document.getElementById('matricula').value.toUpperCase(),
+                modelo: document.getElementById('modelo').value,
+                flota: document.getElementById('flota').value,
+                arc_type: document.getElementById('arc_type').value,
+                fecha_arc: document.getElementById('fecha_arc').value
+            };
+            
+            const res = await fetch('/api/arcs', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                document.getElementById('arc-form').reset();
+                loadArcs();
+            } else {
+                alert('Error al guardar. Matrícula可能 ya existe.');
+            }
+        }
+
+        async function loadArcs() {
+            const res = await fetch('/api/arcs');
+            const arcs = await res.json();
+            renderStats(arcs);
+            renderHeatmap(arcs);
+        }
+
+        function getDaysLeft(fecha) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const arcDate = new Date(fecha);
+            return Math.ceil((arcDate - today) / (1000 * 60 * 60 * 24));
+        }
+
+        function getUrgencyClass(days) {
+            if (days < 0) return 'expired';
+            if (days <= 30) return 'critical';
+            if (days <= 90) return 'warning';
+            if (days <= 180) return 'moderate';
+            return 'safe';
+        }
+
+        function renderStats(arcs) {
+            const critical = arcs.filter(a => getDaysLeft(a.fecha_arc) <= 30).length;
+            const warning = arcs.filter(a => {
+                const d = getDaysLeft(a.fecha_arc);
+                return d > 30 && d <= 90;
+            }).length;
+            const safe = arcs.filter(a => getDaysLeft(a.fecha_arc) > 90).length;
+
+            document.getElementById('stats-bar').innerHTML = `
+                <div class="stat">
+                    <div class="stat-value">${arcs.length}</div>
+                    <div class="stat-label">Total ARCs</div>
+                </div>
+                <div class="stat critical">
+                    <div class="stat-value">${critical}</div>
+                    <div class="stat-label">⚠️ <30 días</div>
+                </div>
+                <div class="stat warning">
+                    <div class="stat-value">${warning}</div>
+                    <div class="stat-label">🟡 30-90 días</div>
+                </div>
+                <div class="stat safe">
+                    <div class="stat-value">${safe}</div>
+                    <div class="stat-label">✅ >90 días</div>
+                </div>
+            `;
+        }
+
+        function renderHeatmap(arcs) {
+            const grid = document.getElementById('heatmap-grid');
+            
+            arcs.sort((a, b) => getDaysLeft(a.fecha_arc) - getDaysLeft(b.fecha_arc));
+            
+            if (arcs.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No hay ARCs registrados.<br>Usa la pestaña de Entrada para agregar.</div>';
+                return;
+            }
+
+            grid.innerHTML = arcs.map(arc => {
+                const days = getDaysLeft(arc.fecha_arc);
+                const cls = getUrgencyClass(days);
+                const typeClass = arc.arc_type === 'Inicial' ? 'inicial' : 
+                                  arc.arc_type === 'Primera Prórroga' ? 'primera' : 'segunda';
+                const labelDays = days < 0 ? `Expirado hace ${Math.abs(days)} días` : 
+                                  days === 0 ? 'Vence hoy' : `${days} días`;
+
+                return `
+                <div class="arc-card ${cls}">
+                    <div class="arc-header">
+                        <span class="matricula">${arc.matricula}</span>
+                        <span class="type-badge type-${typeClass}">${arc.arc_type}</span>
+                    </div>
+                    <div class="arc-detail">📁 ${arc.modelo}</div>
+                    <div class="arc-detail">🚁 ${arc.flota}</div>
+                    <div class="arc-detail">📅 ${arc.fecha_arc}</div>
+                    <div class="days-left">${labelDays}</div>
+                    <button class="delete-btn" onclick="deleteArc(${arc.id})">🗑️ Eliminar</button>
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function deleteArc(id) {
+            if (!confirm('¿Eliminar este ARC?')) return;
+            await fetch(`/api/arcs/${id}`, {method: 'DELETE'});
+            loadArcs();
+        }
+    </script>
+</body>
+</html>
