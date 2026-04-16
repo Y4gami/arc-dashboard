@@ -1228,10 +1228,10 @@
                         <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}">${arc.tipo_arc}</span></div>
                         <div>${formatDate(arc.fecha_proximo_arc)}</div>
                         <div>
-                            <select class="estado-select" onchange="changeEstado(${arc.id}, this.value)" style="background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 0.2rem 0.4rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: inherit;">
-                                <option value="Sin Iniciar" ${arc.estado === 'Sin Iniciar' ? 'selected' : ''}>Sin Iniciar</option>
-                                <option value="En progreso" ${arc.estado === 'En progreso' ? 'selected' : ''}>En Progreso</option>
-                                <option value="Terminado" ${arc.estado === 'Terminado' ? 'selected' : ''}>Terminado</option>
+                            <select class="estado-select" data-current="${arc.estado}" onchange="changeEstado(${arc.id}, this)" style="border-radius: 20px; padding: 0.25rem 0.6rem; font-size: 0.7rem; font-weight: 700; cursor: pointer; color: #ffffff; border: none; background: ${arc.estado === 'Sin Iniciar' ? '#0891b2' : arc.estado === 'En progreso' ? '#ea580c' : '#16a34a'};">
+                                <option value="Sin Iniciar" ${arc.estado === 'Sin Iniciar' ? 'selected' : ''} style="background: #0891b2;">Sin Iniciar</option>
+                                <option value="En progreso" ${arc.estado === 'En progreso' ? 'selected' : ''} style="background: #ea580c;">En Progreso</option>
+                                <option value="Terminado" ${arc.estado === 'Terminado' ? 'selected' : ''} style="background: #16a34a;">Terminado</option>
                             </select>
                         </div>
                         <div><span class="days-badge days-${cls}">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
@@ -1284,7 +1284,15 @@
             document.getElementById('edit-modal').classList.add('hidden');
         }
 
-        function changeEstado(id, newEstado) {
+        function changeEstado(id, selectEl) {
+            const newEstado = selectEl.value;
+            const colors = {
+                'Sin Iniciar': '#0891b2',
+                'En progreso': '#ea580c',
+                'Terminado': '#16a34a'
+            };
+            selectEl.style.background = colors[newEstado] || '#0891b2';
+
             if (newEstado === 'Terminado') {
                 openTerminadoModal(id);
             } else {
