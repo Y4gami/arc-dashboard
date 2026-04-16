@@ -19,12 +19,13 @@ def init_db():
         CREATE TABLE IF NOT EXISTS arcs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             matricula TEXT UNIQUE NOT NULL,
-            tipo_operacion TEXT NOT NULL,
-            sn TEXT NOT NULL,
+            tipo_operacion TEXT NOT NULL DEFAULT '',
+            sn TEXT NOT NULL DEFAULT '',
             modelo TEXT NOT NULL,
             fecha_arc TEXT NOT NULL,
             fecha_proximo_arc TEXT NOT NULL,
             tipo_arc TEXT NOT NULL,
+            estado TEXT NOT NULL DEFAULT 'Sin Iniciar',
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -45,10 +46,10 @@ def api_arcs():
         data = request.json
         try:
             conn.execute('''
-                INSERT INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc, estado)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''', (data['matricula'], data['tipo_operacion'], data['sn'], data['modelo'],
-                  data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc']))
+                  data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc'], data['estado']))
             conn.commit()
             return jsonify({'status': 'ok'}), 201
         except sqlite3.IntegrityError:
@@ -60,16 +61,23 @@ def api_arcs():
     conn.close()
     return jsonify([dict(row) for row in arcs])
 
-@app.route('/api/arcs/<int:arc_id>', methods=['PUT', 'DELETE'])
+@app.route('/api/arcs/<int:arc_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_arc_edit(arc_id):
     conn = get_db()
+    if request.method == 'GET':
+        arc = conn.execute('SELECT * FROM arcs WHERE id=?', (arc_id,)).fetchone()
+        conn.close()
+        if arc:
+            return jsonify(dict(arc))
+        return jsonify({'status': 'error', 'message': 'No encontrado'}), 404
+
     if request.method == 'PUT':
         data = request.json
         conn.execute('''
-            UPDATE arcs SET matricula=?, tipo_operacion=?, sn=?, modelo=?, fecha_arc=?, fecha_proximo_arc=?, tipo_arc=?
+            UPDATE arcs SET matricula=?, tipo_operacion=?, sn=?, modelo=?, fecha_arc=?, fecha_proximo_arc=?, tipo_arc=?, estado=?
             WHERE id=?
         ''', (data['matricula'], data['tipo_operacion'], data['sn'], data['modelo'],
-              data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc'], arc_id))
+              data['fecha_arc'], data['fecha_proximo_arc'], data['tipo_arc'], data['estado'], arc_id))
         conn.commit()
         conn.close()
         return jsonify({'status': 'ok'})
@@ -110,6 +118,7 @@ def api_import():
                 fecha_arc = str(row[4]).strip() if row[4] else None
                 fecha_proximo_arc = str(row[5]).strip() if row[5] else None
                 tipo_arc = str(row[6]).strip() if row[6] else None
+                estado = str(row[7]).strip() if len(row) > 7 and row[7] else 'Sin Iniciar'
 
                 if not all([matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc]):
                     errors.append(f'Fila {row_idx}: datos incompletos')
@@ -130,9 +139,9 @@ def api_import():
                                 pass
 
                 conn.execute('''
-                    INSERT OR REPLACE INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                ''', (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc))
+                    INSERT OR REPLACE INTO arcs (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc, estado)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (matricula, tipo_operacion, sn, modelo, fecha_arc, fecha_proximo_arc, tipo_arc, estado))
                 imported += 1
             except Exception as e:
                 errors.append(f'Fila {row_idx}: {str(e)}')
@@ -160,7 +169,7 @@ def api_export():
         ws = wb.active
         ws.title = 'ARCs'
 
-        headers = ['MATRÍCULA', 'TIPO OPERACIÓN', 'SN', 'MODELO', 'Fecha ARC', 'Fecha PRÓXIMO ARC', 'TIPO ARC']
+        headers = ['MATRÍCULA', 'TIPO OPERACIÓN', 'SN', 'MODELO', 'Fecha ARC', 'Fecha PRÓXIMO ARC', 'TIPO ARC', 'ESTADO']
         ws.append(headers)
 
         for arc in arcs:
@@ -171,11 +180,12 @@ def api_export():
                 arc['modelo'],
                 arc['fecha_arc'],
                 arc['fecha_proximo_arc'],
-                arc['tipo_arc']
+                arc['tipo_arc'],
+                arc['estado']
             ])
 
         for col in ws.columns:
-            ws.column_dimensions[col[0].column_letter].width = 20
+            ws.column_dimensions[col[0].column_letter].width = 22
 
         output = BytesIO()
         wb.save(output)

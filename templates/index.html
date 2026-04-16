@@ -27,6 +27,8 @@
             --danger-light: #fee2e2;
             --critical: #dc2626;
             --critical-light: #fecaca;
+            --info: #3b82f6;
+            --info-light: #dbeafe;
             --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
             --radius: 16px;
@@ -46,6 +48,7 @@
             --warning-light: #78350f;
             --danger-light: #7f1d1d;
             --critical-light: #991b1b;
+            --info-light: #1e3a5f;
             --shadow: 0 1px 3px rgba(0,0,0,0.3);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4);
         }
@@ -60,11 +63,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
+        .container { max-width: 1600px; margin: 0 auto; padding: 1.5rem; }
 
         /* Header */
         .header {
@@ -76,83 +75,48 @@
             gap: 1rem;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
 
         .logo {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             background: linear-gradient(135deg, var(--accent), #8b5cf6);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 1.5rem;
-            box-shadow: var(--shadow);
         }
 
         .brand h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.5rem; font-weight: 800;
             background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .brand span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
+        .brand span { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
 
-        .header-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
+        .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
         .btn {
             padding: 0.6rem 1.2rem;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-size: 0.9rem;
+            background: var(--bg-card); color: var(--text-primary);
+            display: flex; align-items: center; gap: 0.4rem;
         }
 
-        .btn:hover {
-            border-color: var(--accent);
-            background: var(--accent-light);
-        }
+        .btn:hover { border-color: var(--accent); background: var(--accent-light); }
+        .btn-icon { padding: 0.6rem; }
+        .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-success { background: var(--success); color: white; border-color: var(--success); }
+        .btn-success:hover { background: #059669; }
 
-        .btn-icon {
-            padding: 0.6rem;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-        }
-
-        /* Stats Grid */
+        /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
@@ -169,45 +133,30 @@
 
         .stat-card::before {
             content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: absolute; top: 0; left: 0; right: 0;
             height: 3px;
         }
 
-        .stat-card.danger::before { background: var(--danger); }
-        .stat-card.warning::before { background: var(--warning); }
-        .stat-card.success::before { background: var(--success); }
-        .stat-card.accent::before { background: var(--accent); }
+        .stat-card.total::before { background: var(--accent); }
+        .stat-card.expired::before { background: var(--critical); }
+        .stat-card.sin-iniciar::before { background: var(--text-muted); }
+        .stat-card.en-progreso::before { background: var(--warning); }
+        .stat-card.terminado::before { background: var(--success); }
 
         .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
+            font-size: 0.75rem; color: var(--text-muted);
+            font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 0.5rem;
         }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
+        .stat-value { font-size: 2rem; font-weight: 800; line-height: 1; }
+        .stat-card.total .stat-value { color: var(--accent); }
+        .stat-card.expired .stat-value { color: var(--critical); }
+        .stat-card.sin-iniciar .stat-value { color: var(--text-muted); }
+        .stat-card.en-progreso .stat-value { color: var(--warning); }
+        .stat-card.terminado .stat-value { color: var(--success); }
 
-        .stat-card.danger .stat-value { color: var(--danger); }
-        .stat-card.warning .stat-value { color: var(--warning); }
-        .stat-card.success .stat-value { color: var(--success); }
-        .stat-card.accent .stat-value { color: var(--accent); }
-
-        .stat-change {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Charts Row */
+        /* Charts */
         .charts-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -215,11 +164,7 @@
             margin-bottom: 2rem;
         }
 
-        @media (max-width: 1024px) {
-            .charts-row {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 1024px) { .charts-row { grid-template-columns: 1fr; } }
 
         .chart-card {
             background: var(--bg-card);
@@ -230,35 +175,41 @@
         }
 
         .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 1.5rem;
         }
 
-        .chart-title {
-            font-size: 1rem;
-            font-weight: 700;
+        .chart-title { font-size: 1rem; font-weight: 700; }
+        .chart-container { position: relative; height: 220px; }
+
+        /* Tabs */
+        .main-tabs {
+            display: flex; gap: 0.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto; padding-bottom: 0.5rem;
         }
 
-        .chart-container {
-            position: relative;
-            height: 250px;
+        .main-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer; font-weight: 600;
+            white-space: nowrap; transition: all 0.2s;
+            font-size: 0.95rem;
         }
+
+        .main-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         /* View Controls */
         .view-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 1.5rem;
+            flex-wrap: wrap; gap: 1rem;
         }
 
         .view-tabs {
-            display: flex;
-            gap: 0.25rem;
+            display: flex; gap: 0.25rem;
             background: var(--bg-card);
             padding: 0.25rem;
             border-radius: var(--radius-sm);
@@ -266,26 +217,18 @@
         }
 
         .view-tab {
-            padding: 0.5rem 1rem;
-            border: none;
+            padding: 0.5rem 1rem; border: none;
             background: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
+            border-radius: 6px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 500;
             color: var(--text-secondary);
             transition: all 0.2s;
         }
 
-        .view-tab.active {
-            background: var(--accent);
-            color: white;
-        }
+        .view-tab.active { background: var(--accent); color: white; }
 
         .search-box {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -293,22 +236,41 @@
         }
 
         .search-box input {
-            border: none;
+            border: none; background: transparent;
+            font-size: 0.9rem; color: var(--text-primary);
+            outline: none; width: 200px;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        /* Status Filter */
+        .filter-group {
+            display: flex; gap: 0.25rem;
+            background: var(--bg-card);
+            padding: 0.25rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .filter-btn {
+            padding: 0.4rem 0.8rem; border: none;
             background: transparent;
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            outline: none;
-            width: 200px;
+            border-radius: 6px; cursor: pointer;
+            font-size: 0.8rem; font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
 
-        .search-box input::placeholder {
-            color: var(--text-muted);
-        }
+        .filter-btn.active { background: var(--info); color: white; }
+        .filter-btn[data-status="todos"].active { background: var(--accent); }
+        .filter-btn[data-status="sin-iniciar"].active { background: var(--text-muted); }
+        .filter-btn[data-status="en-progreso"].active { background: var(--warning); }
+        .filter-btn[data-status="terminado"].active { background: var(--success); }
 
-        /* ARC Cards Grid */
+        /* Grid View */
         .arcs-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 1rem;
         }
 
@@ -321,52 +283,34 @@
             transition: all 0.3s;
         }
 
-        .arc-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
+        .arc-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
 
         .arc-card-header {
             padding: 1.25rem;
-            display: flex;
-            justify-content: space-between;
+            display: flex; justify-content: space-between;
             align-items: flex-start;
             border-bottom: 1px solid var(--border);
         }
 
-        .arc-card-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+        .arc-card-left { display: flex; align-items: center; gap: 1rem; }
 
         .arc-avatar {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem;
             color: white;
         }
 
-        .arc-card-info h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-        }
+        .arc-card-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .arc-card-info span { font-size: 0.8rem; color: var(--text-muted); }
 
-        .arc-card-info span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        .arc-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
         .arc-badge {
-            padding: 0.35rem 0.75rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
         }
@@ -374,75 +318,50 @@
         .badge-inicial { background: var(--accent-light); color: var(--accent); }
         .badge-primera { background: var(--warning-light); color: var(--warning); }
         .badge-segunda { background: #fce7f3; color: #be185d; }
+        .badge-sin-iniciar { background: #f1f5f9; color: var(--text-muted); }
+        .badge-en-progreso { background: var(--warning-light); color: var(--warning); }
+        .badge-terminado { background: var(--success-light); color: var(--success); }
 
         [data-theme="dark"] .badge-inicial { background: var(--accent-light); color: #a5b4fc; }
         [data-theme="dark"] .badge-primera { background: var(--warning-light); color: #fcd34d; }
         [data-theme="dark"] .badge-segunda { background: #4a044e; color: #f9a8d4; }
+        [data-theme="dark"] .badge-sin-iniciar { background: #334155; color: #94a3b8; }
+        [data-theme="dark"] .badge-en-progreso { background: var(--warning-light); color: #fcd34d; }
+        [data-theme="dark"] .badge-terminado { background: var(--success-light); color: #86efac; }
 
-        .arc-card-body {
-            padding: 1.25rem;
-        }
+        .arc-card-body { padding: 1.25rem; }
 
         .arc-detail {
-            display: flex;
-            justify-content: space-between;
+            display: flex; justify-content: space-between;
             align-items: center;
             padding: 0.5rem 0;
             border-bottom: 1px solid var(--border);
         }
 
-        .arc-detail:last-child {
-            border-bottom: none;
-        }
+        .arc-detail:last-child { border-bottom: none; }
+        .arc-detail-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+        .arc-detail-value { font-size: 0.9rem; font-weight: 600; }
 
-        .arc-detail-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .arc-detail-value {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .arc-progress {
-            margin-top: 1rem;
-        }
-
+        .arc-progress { margin-top: 1rem; }
         .arc-progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.8rem;
+            display: flex; justify-content: space-between;
+            margin-bottom: 0.5rem; font-size: 0.8rem;
         }
 
-        .arc-progress-bar {
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .arc-progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
+        .arc-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .arc-progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 
         .arc-card-footer {
             padding: 1rem 1.25rem;
             background: var(--bg-primary);
-            display: flex;
-            justify-content: space-between;
+            display: flex; justify-content: space-between;
             align-items: center;
         }
 
         .days-badge {
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-weight: 700; font-size: 0.85rem;
         }
 
         .days-expired { background: var(--critical-light); color: var(--critical); }
@@ -450,23 +369,21 @@
         .days-warning { background: var(--warning-light); color: var(--warning); }
         .days-moderate { background: #fef9c3; color: #a16207; }
         .days-safe { background: var(--success-light); color: var(--success); }
+        .days-terminado { background: var(--success-light); color: var(--success); }
 
         [data-theme="dark"] .days-moderate { background: #422006; color: #fcd34d; }
 
-        .arc-delete {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 6px;
-            transition: all 0.2s;
+        .arc-actions { display: flex; gap: 0.5rem; }
+
+        .arc-btn {
+            background: none; border: 1px solid var(--border);
+            color: var(--text-secondary);
+            cursor: pointer; padding: 0.4rem 0.6rem;
+            border-radius: 6px; transition: all 0.2s;
         }
 
-        .arc-delete:hover {
-            background: var(--danger-light);
-            color: var(--danger);
-        }
+        .arc-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+        .arc-btn.delete:hover { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
 
         /* List View */
         .arcs-list {
@@ -479,12 +396,12 @@
 
         .list-header {
             display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr 100px;
+            grid-template-columns: 140px 2fr 100px 1fr 100px 120px 90px 100px;
             gap: 1rem;
             padding: 1rem 1.5rem;
             background: var(--bg-primary);
             border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-muted);
@@ -492,9 +409,8 @@
 
         .list-row {
             display: grid;
-            grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr 100px;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
+            grid-template-columns: 140px 2fr 100px 1fr 100px 120px 90px 100px;
+            gap: 1rem; padding: 1rem 1.5rem;
             align-items: center;
             border-bottom: 1px solid var(--border);
             transition: background 0.2s;
@@ -503,66 +419,27 @@
         .list-row:last-child { border-bottom: none; }
         .list-row:hover { background: var(--bg-primary); }
 
-        .list-matricula {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
+        .list-matricula { font-weight: 700; }
+        .list-modelo { font-size: 0.85rem; color: var(--text-secondary); }
+        .list-sn { font-size: 0.85rem; }
 
-        .list-sn {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        @media (max-width: 1024px) {
-            .list-header { display: none; }
-            .list-row {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
+        @media (max-width: 1200px) {
+            .list-header, .list-row {
+                grid-template-columns: 120px 1.5fr 80px 100px 100px 80px;
             }
-            .arcs-list .arc-detail { padding: 0.25rem 0; }
-        }
-
-        /* Compact View */
-        .arcs-compact {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .compact-row {
-            background: var(--bg-card);
-            border-radius: var(--radius-sm);
-            padding: 1rem 1.5rem;
-            display: grid;
-            grid-template-columns: 150px 1fr 150px 100px 80px;
-            gap: 1rem;
-            align-items: center;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .compact-row:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow);
-        }
-
-        .compact-matricula {
-            font-weight: 700;
-        }
-
-        .compact-dates {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+            .list-header :nth-child(4),
+            .list-row :nth-child(4) { display: none; }
         }
 
         @media (max-width: 768px) {
-            .compact-row { grid-template-columns: 1fr 1fr; }
+            .list-header { display: none; }
+            .list-row { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
         }
 
-        /* Calendar Heatmap */
+        /* Calendar View */
         .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 0.75rem;
         }
 
@@ -577,10 +454,7 @@
 
         .calendar-card::before {
             content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: absolute; top: 0; left: 0; right: 0;
             height: 4px;
             border-radius: var(--radius) var(--radius) 0 0;
         }
@@ -590,63 +464,19 @@
         .calendar-card.warning::before { background: var(--warning); }
         .calendar-card.moderate::before { background: #eab308; }
         .calendar-card.safe::before { background: var(--success); }
+        .calendar-card.terminado::before { background: var(--success); }
 
-        .calendar-date {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.25rem;
-        }
-
+        .calendar-date { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.25rem; }
         .calendar-card.expired .calendar-date { color: var(--critical); }
         .calendar-card.critical .calendar-date { color: var(--danger); }
         .calendar-card.warning .calendar-date { color: var(--warning); }
         .calendar-card.moderate .calendar-date { color: #a16207; }
         .calendar-card.safe .calendar-date { color: var(--success); }
+        .calendar-card.terminado .calendar-date { color: var(--success); }
 
-        .calendar-month {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .calendar-matricula {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin: 0.5rem 0 0.25rem;
-        }
-
-        .calendar-days {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Tabs */
-        .main-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-        }
-
-        .main-tab {
-            padding: 0.75rem 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.2s;
-            font-size: 0.95rem;
-        }
-
-        .main-tab.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
+        .calendar-month { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .calendar-matricula { font-size: 0.85rem; font-weight: 700; margin: 0.5rem 0 0.25rem; }
+        .calendar-days { font-size: 0.75rem; color: var(--text-muted); }
 
         /* Form */
         .form-card {
@@ -658,11 +488,7 @@
             max-width: 900px;
         }
 
-        .form-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
+        .form-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
 
         .form-grid {
             display: grid;
@@ -670,21 +496,10 @@
             gap: 1.25rem;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .form-group.full { grid-column: 1 / -1; }
 
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
 
         input, select {
             padding: 0.75rem 1rem;
@@ -703,25 +518,38 @@
             box-shadow: 0 0 0 3px var(--accent-light);
         }
 
+        .estado-group {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+
+        .estado-radio { display: none; }
+
+        .estado-label {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem; font-weight: 500;
+            transition: all 0.2s;
+            background: var(--bg-primary);
+        }
+
+        .estado-radio:checked + .estado-label.si { background: var(--text-muted); color: white; border-color: var(--text-muted); }
+        .estado-radio:checked + .estado-label.ep { background: var(--warning); color: white; border-color: var(--warning); }
+        .estado-radio:checked + .estado-label.term { background: var(--success); color: white; border-color: var(--success); }
+
         .btn-submit {
             margin-top: 1.5rem;
             padding: 0.85rem 2rem;
             border: none;
             border-radius: var(--radius-sm);
-            font-weight: 700;
-            cursor: pointer;
-            background: var(--accent);
-            color: white;
-            font-size: 1rem;
-            transition: all 0.2s;
+            font-weight: 700; cursor: pointer;
+            background: var(--accent); color: white;
+            font-size: 1rem; transition: all 0.2s;
             font-family: inherit;
         }
 
-        .btn-submit:hover {
-            background: var(--accent-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
-        }
+        .btn-submit:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
         .import-section {
             margin-top: 2rem;
@@ -729,35 +557,57 @@
             border-top: 1px solid var(--border);
         }
 
-        .import-section h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .import-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .import-section p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .import-section code { background: var(--bg-primary); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.8rem; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
         }
 
-        .import-section p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            width: 90%; max-width: 700px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: var(--shadow-lg);
         }
 
-        .import-section code {
-            background: var(--bg-primary);
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
+        .modal h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+        .modal .form-grid { gap: 1rem; }
+        .modal label { font-size: 0.8rem; }
+
+        .modal-actions {
+            display: flex; justify-content: flex-end; gap: 0.75rem;
+            margin-top: 1.5rem;
         }
+
+        .btn-cancel {
+            padding: 0.7rem 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover { border-color: var(--danger); background: var(--danger-light); color: var(--danger); }
 
         /* Toast */
         .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
+            position: fixed; bottom: 2rem; right: 2rem;
             padding: 1rem 1.5rem;
             border-radius: var(--radius-sm);
-            font-weight: 600;
-            color: white;
-            z-index: 1000;
+            font-weight: 600; color: white;
+            z-index: 1001;
             animation: slideIn 0.3s ease;
             box-shadow: var(--shadow-lg);
         }
@@ -771,16 +621,11 @@
         }
 
         .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
+            text-align: center; padding: 4rem 2rem; color: var(--text-muted);
         }
 
         .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+            width: 80px; height: 80px; margin-bottom: 1rem; opacity: 0.5;
         }
 
         .hidden { display: none !important; }
@@ -790,16 +635,14 @@
             .header { flex-direction: column; align-items: flex-start; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .arcs-grid { grid-template-columns: 1fr; }
-            .charts-row { gap: 1rem; }
             .view-controls { flex-direction: column; align-items: stretch; }
-            .search-box { width: 100%; }
-            .search-box input { width: 100%; }
+            .search-box, .filter-group { width: 100%; }
+            .filter-group { overflow-x: auto; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
             <div class="header-left">
                 <div class="logo">🛩️</div>
@@ -818,18 +661,15 @@
             </div>
         </header>
 
-        <!-- Main Tabs -->
         <div class="main-tabs">
             <button class="main-tab active" onclick="showMainTab('dashboard')">📊 Dashboard</button>
             <button class="main-tab" onclick="showMainTab('entry')">📝 Entrada de Datos</button>
         </div>
 
-        <!-- Dashboard Tab -->
+        <!-- Dashboard -->
         <div id="dashboard-tab">
-            <!-- Stats -->
             <div class="stats-grid" id="stats-grid"></div>
 
-            <!-- Charts -->
             <div class="charts-row">
                 <div class="chart-card">
                     <div class="chart-header">
@@ -849,12 +689,19 @@
                 </div>
             </div>
 
-            <!-- View Controls -->
             <div class="view-controls">
-                <div class="view-tabs">
-                    <button class="view-tab active" onclick="setView('grid')">▦ Grid</button>
-                    <button class="view-tab" onclick="setView('list')">☰ Lista</button>
-                    <button class="view-tab" onclick="setView('calendar')">📅 Calendario</button>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
+                    <div class="view-tabs">
+                        <button class="view-tab active" onclick="setView('grid')">▦ Grid</button>
+                        <button class="view-tab" onclick="setView('list')">☰ Lista</button>
+                        <button class="view-tab" onclick="setView('calendar')">📅 Calendario</button>
+                    </div>
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-status="todos" onclick="filterByStatus('todos')">Todos</button>
+                        <button class="filter-btn" data-status="sin-iniciar" onclick="filterByStatus('sin-iniciar')">Sin Iniciar</button>
+                        <button class="filter-btn" data-status="en-progreso" onclick="filterByStatus('en-progreso')">En Progreso</button>
+                        <button class="filter-btn" data-status="terminado" onclick="filterByStatus('terminado')">Terminado</button>
+                    </div>
                 </div>
                 <div class="search-box">
                     <span>🔍</span>
@@ -862,7 +709,6 @@
                 </div>
             </div>
 
-            <!-- ARC Views -->
             <div id="grid-view" class="arcs-grid"></div>
             <div id="list-view" class="arcs-list hidden"></div>
             <div id="calendar-view" class="calendar-grid hidden"></div>
@@ -874,7 +720,7 @@
             </div>
         </div>
 
-        <!-- Entry Tab -->
+        <!-- Entry -->
         <div id="entry-tab" class="hidden">
             <div class="form-card">
                 <div class="form-title">Nuevo Registro ARC</div>
@@ -886,7 +732,7 @@
                         </div>
                         <div class="form-group">
                             <label>TIPO OPERACIÓN *</label>
-                            <input type="text" id="tipo_operacion" placeholder="Comercial, Privada..." required>
+                            <input type="text" id="tipo_operacion" placeholder="EASA (ATO), EASA (SPO)..." required>
                         </div>
                         <div class="form-group">
                             <label>SN (Serial Number) *</label>
@@ -894,7 +740,18 @@
                         </div>
                         <div class="form-group">
                             <label>MODELO *</label>
-                            <input type="text" id="modelo" placeholder="A320-200" required>
+                            <input type="text" id="modelo" placeholder="TECNAM P2002JF" required>
+                        </div>
+                        <div class="form-group full">
+                            <label>ESTADO *</label>
+                            <div class="estado-group">
+                                <input type="radio" id="estado-si" name="estado" value="Sin Iniciar" class="estado-radio" checked>
+                                <label for="estado-si" class="estado-label si">⭕ Sin Iniciar</label>
+                                <input type="radio" id="estado-ep" name="estado" value="En progreso" class="estado-radio">
+                                <label for="estado-ep" class="estado-label ep">🔄 En Progreso</label>
+                                <input type="radio" id="estado-term" name="estado" value="Terminado" class="estado-radio">
+                                <label for="estado-term" class="estado-label term">✅ Terminado</label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Fecha ARC *</label>
@@ -921,8 +778,8 @@
             <div class="form-card" style="margin-top: 1.5rem;">
                 <div class="import-section">
                     <h3>📤 Importar desde Excel</h3>
-                    <p>Columnas en orden: <code>MATRÍCULA</code>, <code>TIPO OPERACIÓN</code>, <code>SN</code>, <code>MODELO</code>, <code>Fecha ARC</code>, <code>Fecha PRÓXIMO ARC</code>, <code>TIPO ARC</code></p>
-                    <p>Primera fila = headers. Formatos fecha aceptados: YYYY-MM-DD, DD/MM/YYYY</p>
+                    <p>Columnas: <code>MATRÍCULA</code>, <code>TIPO OPERACIÓN</code>, <code>SN</code>, <code>MODELO</code>, <code>Fecha ARC</code>, <code>Fecha PRÓXIMO ARC</code>, <code>TIPO ARC</code>, <code>ESTADO</code></p>
+                    <p>Formato fecha: YYYY-MM-DD o DD/MM/YYYY. Primera fila = headers.</p>
                     <input type="file" id="excel-file" accept=".xlsx,.xls" style="margin-top: 0.5rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); width: 100%; max-width: 400px;">
                     <button class="btn btn-primary" style="margin-top: 1rem;" onclick="importExcel()">Importar Excel</button>
                 </div>
@@ -930,9 +787,67 @@
         </div>
     </div>
 
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>✏️ Editar ARC</h2>
+            <form id="edit-form" onsubmit="saveEdit(event)">
+                <input type="hidden" id="edit-id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>MATRÍCULA *</label>
+                        <input type="text" id="edit-matricula" required>
+                    </div>
+                    <div class="form-group">
+                        <label>TIPO OPERACIÓN *</label>
+                        <input type="text" id="edit-tipo_operacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label>SN *</label>
+                        <input type="text" id="edit-sn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>MODELO *</label>
+                        <input type="text" id="edit-modelo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ESTADO *</label>
+                        <select id="edit-estado" required>
+                            <option value="Sin Iniciar">Sin Iniciar</option>
+                            <option value="En progreso">En Progreso</option>
+                            <option value="Terminado">Terminado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha ARC *</label>
+                        <input type="date" id="edit-fecha_arc" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha PRÓXIMO ARC *</label>
+                        <input type="date" id="edit-fecha_proximo_arc" required>
+                    </div>
+                    <div class="form-group full">
+                        <label>TIPO de ARC *</label>
+                        <select id="edit-tipo_arc" required>
+                            <option value="Inicial">ARC Inicial</option>
+                            <option value="Primera Prórroga">ARC Primera Prórroga</option>
+                            <option value="Segunda Prórroga">ARC Segunda Prórroga</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">💾 Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         let arcs = [];
+        let filteredArcs = [];
         let currentView = 'grid';
+        let currentFilter = 'todos';
         let statusChart = null;
         let typeChart = null;
 
@@ -962,13 +877,6 @@
             if (tab === 'dashboard') renderDashboard();
         }
 
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('entry-tab').style.display = tab === 'entry' ? 'block' : 'none';
-            document.getElementById('heatmap-tab').style.display = tab === 'heatmap' ? 'block' : 'none';
-        }
-
         function setView(view) {
             currentView = view;
             document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
@@ -976,21 +884,34 @@
             document.getElementById('grid-view').classList.toggle('hidden', view !== 'grid');
             document.getElementById('list-view').classList.toggle('hidden', view !== 'list');
             document.getElementById('calendar-view').classList.toggle('hidden', view !== 'calendar');
-            renderDashboard();
+            renderArcs();
+        }
+
+        function filterByStatus(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-status="${status}"]`).classList.add('active');
+            applyFilters();
         }
 
         function filterArcs() {
-            const query = document.getElementById('search').value.toLowerCase();
-            const filtered = arcs.filter(a => 
-                a.matricula.toLowerCase().includes(query) ||
-                a.modelo.toLowerCase().includes(query) ||
-                a.tipo_operacion.toLowerCase().includes(query)
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search')?.value?.toLowerCase() || '';
+            filteredArcs = arcs.filter(a =>
+                (currentFilter === 'todos' || a.estado === currentFilter) &&
+                (a.matricula.toLowerCase().includes(query) ||
+                 a.modelo.toLowerCase().includes(query) ||
+                 a.tipo_operacion.toLowerCase().includes(query))
             );
-            renderArcs(filtered);
+            renderArcs();
         }
 
         async function submitArc(e) {
             e.preventDefault();
+            const estado = document.querySelector('input[name="estado"]:checked').value;
             const data = {
                 matricula: document.getElementById('matricula').value.toUpperCase(),
                 tipo_operacion: document.getElementById('tipo_operacion').value,
@@ -998,7 +919,8 @@
                 modelo: document.getElementById('modelo').value,
                 fecha_arc: document.getElementById('fecha_arc').value,
                 fecha_proximo_arc: document.getElementById('fecha_proximo_arc').value,
-                tipo_arc: document.getElementById('tipo_arc').value
+                tipo_arc: document.getElementById('tipo_arc').value,
+                estado: estado
             };
 
             const res = await fetch('/api/arcs', {
@@ -1009,6 +931,7 @@
 
             if (res.ok) {
                 document.getElementById('arc-form').reset();
+                document.getElementById('estado-si').checked = true;
                 showToast('ARC agregado correctamente', 'success');
                 loadArcs();
             } else {
@@ -1020,6 +943,7 @@
         async function loadArcs() {
             const res = await fetch('/api/arcs');
             arcs = await res.json();
+            applyFilters();
             renderDashboard();
         }
 
@@ -1030,7 +954,8 @@
             return Math.ceil((arcDate - today) / (1000 * 60 * 60 * 24));
         }
 
-        function getUrgencyClass(days) {
+        function getUrgencyClass(days, estado) {
+            if (estado === 'Terminado') return 'terminado';
             if (days < 0) return 'expired';
             if (days <= 30) return 'critical';
             if (days <= 90) return 'warning';
@@ -1049,52 +974,49 @@
             for (let i = 0; i < matricula.length; i++) {
                 hash = matricula.charCodeAt(i) + ((hash << 5) - hash);
             }
-            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6'];
+            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#14b8a6', '#10b981'];
             return colors[Math.abs(hash) % colors.length];
         }
 
         function renderDashboard() {
             renderStats();
             renderCharts();
-            renderArcs(arcs);
         }
 
         function renderStats() {
-            const expired = arcs.filter(a => getDaysLeft(a.fecha_proximo_arc) < 0).length;
-            const critical = arcs.filter(a => { const d = getDaysLeft(a.fecha_proximo_arc); return d >= 0 && d <= 30; }).length;
-            const warning = arcs.filter(a => { const d = getDaysLeft(a.fecha_proximo_arc); return d > 30 && d <= 90; }).length;
-            const safe = arcs.filter(a => getDaysLeft(a.fecha_proximo_arc) > 90).length;
+            const sinIniciar = arcs.filter(a => a.estado === 'Sin Iniciar').length;
+            const enProgreso = arcs.filter(a => a.estado === 'En progreso').length;
+            const terminado = arcs.filter(a => a.estado === 'Terminado').length;
+            const expired = arcs.filter(a => getDaysLeft(a.fecha_proximo_arc) < 0 && a.estado !== 'Terminado').length;
 
             document.getElementById('stats-grid').innerHTML = `
-                <div class="stat-card accent">
+                <div class="stat-card total">
                     <div class="stat-label">Total ARCs</div>
                     <div class="stat-value">${arcs.length}</div>
-                    <div class="stat-change">Aeronaves registradas</div>
                 </div>
-                <div class="stat-card danger">
+                <div class="stat-card expired">
                     <div class="stat-label">⚠️ Expirados</div>
                     <div class="stat-value">${expired}</div>
-                    <div class="stat-change">Requieren renovación</div>
                 </div>
-                <div class="stat-card warning">
-                    <div class="stat-label">🚨 <30 días</div>
-                    <div class="stat-value">${critical}</div>
-                    <div class="stat-change">Urgencia crítica</div>
+                <div class="stat-card sin-iniciar">
+                    <div class="stat-label">⭕ Sin Iniciar</div>
+                    <div class="stat-value">${sinIniciar}</div>
                 </div>
-                <div class="stat-card success">
-                    <div class="stat-label">✅ >90 días</div>
-                    <div class="stat-value">${safe}</div>
-                    <div class="stat-change">En tiempo</div>
+                <div class="stat-card en-progreso">
+                    <div class="stat-label">🔄 En Progreso</div>
+                    <div class="stat-value">${enProgreso}</div>
+                </div>
+                <div class="stat-card terminado">
+                    <div class="stat-label">✅ Terminados</div>
+                    <div class="stat-value">${terminado}</div>
                 </div>
             `;
         }
 
         function renderCharts() {
-            const expired = arcs.filter(a => getDaysLeft(a.fecha_proximo_arc) < 0).length;
-            const critical = arcs.filter(a => { const d = getDaysLeft(a.fecha_proximo_arc); return d >= 0 && d <= 30; }).length;
-            const warning = arcs.filter(a => { const d = getDaysLeft(a.fecha_proximo_arc); return d > 30 && d <= 90; }).length;
-            const moderate = arcs.filter(a => { const d = getDaysLeft(a.fecha_proximo_arc); return d > 90 && d <= 180; }).length;
-            const safe = arcs.filter(a => getDaysLeft(a.fecha_proximo_arc) > 180).length;
+            const sinIniciar = arcs.filter(a => a.estado === 'Sin Iniciar').length;
+            const enProgreso = arcs.filter(a => a.estado === 'En progreso').length;
+            const terminado = arcs.filter(a => a.estado === 'Terminado').length;
 
             const inicial = arcs.filter(a => a.tipo_arc === 'Inicial').length;
             const primera = arcs.filter(a => a.tipo_arc === 'Primera Prórroga').length;
@@ -1110,20 +1032,22 @@
             statusChart = new Chart(document.getElementById('statusChart'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Expirados', 'Críticos (<30d)', 'Aviso (30-90d)', 'Moderado', 'OK (>180d)'],
+                    labels: ['Sin Iniciar', 'En Progreso', 'Terminado'],
                     datasets: [{
-                        data: [expired, critical, warning, moderate, safe],
-                        backgroundColor: ['#dc2626', '#ef4444', '#f59e0b', '#eab308', '#22c55e'],
-                        borderWidth: 0
+                        data: [sinIniciar, enProgreso, terminado],
+                        backgroundColor: ['#94a3b8', '#f59e0b', '#10b981'],
+                        borderWidth: 0,
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '60%',
                     plugins: {
                         legend: {
-                            position: 'right',
-                            labels: { color: textColor, padding: 15, usePointStyle: true, pointStyle: 'circle' }
+                            position: 'bottom',
+                            labels: { color: textColor, padding: 20, usePointStyle: true, pointStyle: 'circle', font: { size: 12 } }
                         }
                     }
                 }
@@ -1134,9 +1058,11 @@
                 data: {
                     labels: ['Inicial', '1ª Prórroga', '2ª Prórroga'],
                     datasets: [{
+                        label: 'Cantidad',
                         data: [inicial, primera, segunda],
                         backgroundColor: ['#6366f1', '#f59e0b', '#ec4899'],
-                        borderRadius: 8
+                        borderRadius: 8,
+                        borderSkipped: false
                     }]
                 },
                 options: {
@@ -1152,7 +1078,7 @@
                             grid: { color: gridColor }
                         },
                         x: {
-                            ticks: { color: textColor },
+                            ticks: { color: textColor, font: { size: 11 } },
                             grid: { display: false }
                         }
                     }
@@ -1160,13 +1086,13 @@
             });
         }
 
-        function renderArcs(data) {
+        function renderArcs() {
             const grid = document.getElementById('grid-view');
             const list = document.getElementById('list-view');
             const calendar = document.getElementById('calendar-view');
             const empty = document.getElementById('empty-state');
 
-            if (data.length === 0) {
+            if (filteredArcs.length === 0) {
                 grid.innerHTML = '';
                 list.innerHTML = '';
                 calendar.innerHTML = '';
@@ -1175,14 +1101,16 @@
             }
             empty.classList.add('hidden');
 
-            // Grid View
-            grid.innerHTML = data.map(arc => {
+            // Grid
+            grid.innerHTML = filteredArcs.map(arc => {
                 const days = getDaysLeft(arc.fecha_proximo_arc);
-                const cls = getUrgencyClass(days);
+                const cls = getUrgencyClass(days, arc.estado);
                 const pct = getProgressPercent(days);
-                const typeClass = arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda';
                 const avatarColor = getAvatarColor(arc.matricula);
-                const daysLabel = days < 0 ? `Expirado ${Math.abs(days)}d` : days === 0 ? 'Vence hoy' : `${days} días`;
+                const estadoClass = arc.estado === 'Sin Iniciar' ? 'sin-iniciar' : arc.estado === 'En progreso' ? 'en-progreso' : 'terminado';
+                const daysLabel = arc.estado === 'Terminado' ? '✅ Terminado' :
+                                  days < 0 ? `Expirado ${Math.abs(days)}d` :
+                                  days === 0 ? 'Vence hoy' : `${days} días`;
 
                 return `
                 <div class="arc-card">
@@ -1194,7 +1122,10 @@
                                 <span>${arc.modelo}</span>
                             </div>
                         </div>
-                        <span class="arc-badge badge-${typeClass}">${arc.tipo_arc}</span>
+                        <div class="arc-badges">
+                            <span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}">${arc.tipo_arc}</span>
+                            <span class="arc-badge badge-${estadoClass}">${arc.estado}</span>
+                        </div>
                     </div>
                     <div class="arc-card-body">
                         <div class="arc-detail">
@@ -1213,6 +1144,7 @@
                             <span class="arc-detail-label">Próximo ARC</span>
                             <span class="arc-detail-value">${arc.fecha_proximo_arc}</span>
                         </div>
+                        ${arc.estado !== 'Terminado' ? `
                         <div class="arc-progress">
                             <div class="arc-progress-header">
                                 <span>Progreso anual</span>
@@ -1221,94 +1153,136 @@
                             <div class="arc-progress-bar">
                                 <div class="arc-progress-fill" style="width: ${pct}%; background: ${getProgressColor(cls)}"></div>
                             </div>
-                        </div>
+                        </div>` : ''}
                     </div>
                     <div class="arc-card-footer">
                         <span class="days-badge days-${cls}">${daysLabel}</span>
-                        <button class="arc-delete" onclick="deleteArc(${arc.id})" title="Eliminar">🗑️</button>
+                        <div class="arc-actions">
+                            <button class="arc-btn" onclick="openEditModal(${arc.id})" title="Editar">✏️</button>
+                            <button class="arc-btn delete" onclick="deleteArc(${arc.id})" title="Eliminar">🗑️</button>
+                        </div>
                     </div>
                 </div>
                 `;
             }).join('');
 
-            // List View
+            // List
             list.innerHTML = `
                 <div class="list-header">
                     <span>MATRÍCULA</span>
-                    <span>MODELO / OPERACIÓN</span>
+                    <span>MODELO</span>
                     <span>SN</span>
+                    <span>OPERACIÓN</span>
                     <span>TIPO</span>
-                    <span>FECHA ARC</span>
                     <span>PRÓXIMO</span>
-                    <span>DIAS</span>
+                    <span>ESTADO</span>
+                    <span>DÍAS</span>
                 </div>
-                ${data.map(arc => {
+                ${filteredArcs.map(arc => {
                     const days = getDaysLeft(arc.fecha_proximo_arc);
-                    const cls = getUrgencyClass(days);
+                    const cls = getUrgencyClass(days, arc.estado);
+                    const estadoClass = arc.estado === 'Sin Iniciar' ? 'sin-iniciar' : arc.estado === 'En progreso' ? 'en-progreso' : 'terminado';
                     return `
                     <div class="list-row">
                         <div class="list-matricula">${arc.matricula}</div>
-                        <div>
-                            <div>${arc.modelo}</div>
-                            <div class="list-sn">${arc.tipo_operacion}</div>
-                        </div>
-                        <div>${arc.sn}</div>
-                        <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}">${arc.tipo_arc}</span></div>
-                        <div>${arc.fecha_arc}</div>
+                        <div class="list-modelo">${arc.modelo}</div>
+                        <div class="list-sn">${arc.sn}</div>
+                        <div>${arc.tipo_operacion}</div>
+                        <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}" style="font-size:0.6rem">${arc.tipo_arc}</span></div>
                         <div>${arc.fecha_proximo_arc}</div>
-                        <div><span class="days-badge days-${cls}" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;">${days}d</span></div>
+                        <div><span class="arc-badge badge-${estadoClass}" style="font-size:0.6rem">${arc.estado}</span></div>
+                        <div><span class="days-badge days-${cls}" style="font-size:0.75rem; padding:0.25rem 0.5rem;">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
                     </div>
                     `;
                 }).join('')}
             `;
 
-            // Calendar View
-            const sorted = [...data].sort((a, b) => new Date(a.fecha_proximo_arc) - new Date(b.fecha_proximo_arc));
+            // Calendar
+            const sorted = [...filteredArcs].sort((a, b) => new Date(a.fecha_proximo_arc) - new Date(b.fecha_proximo_arc));
             calendar.innerHTML = sorted.map(arc => {
                 const days = getDaysLeft(arc.fecha_proximo_arc);
-                const cls = getUrgencyClass(days);
+                const cls = getUrgencyClass(days, arc.estado);
                 const date = new Date(arc.fecha_proximo_arc);
                 const day = date.getDate();
                 const month = date.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase();
-                const daysLabel = days < 0 ? `+${Math.abs(days)}d` : `${days}d`;
 
                 return `
                 <div class="calendar-card ${cls}">
                     <div class="calendar-date">${day}</div>
                     <div class="calendar-month">${month}</div>
                     <div class="calendar-matricula">${arc.matricula}</div>
-                    <div class="calendar-days">${daysLabel}</div>
+                    <div class="calendar-days">${arc.estado === 'Terminado' ? '✓ Terminado' : days+'d'}</div>
                 </div>
                 `;
             }).join('');
         }
 
         function getProgressColor(cls) {
-            const colors = {
-                expired: '#dc2626',
-                critical: '#ef4444',
-                warning: '#f59e0b',
-                moderate: '#eab308',
-                safe: '#22c55e'
-            };
+            const colors = { expired: '#dc2626', critical: '#ef4444', warning: '#f59e0b', moderate: '#eab308', safe: '#22c55e', terminado: '#10b981' };
             return colors[cls] || '#64748b';
+        }
+
+        function openEditModal(id) {
+            const arc = arcs.find(a => a.id === id);
+            if (!arc) return;
+            document.getElementById('edit-id').value = arc.id;
+            document.getElementById('edit-matricula').value = arc.matricula;
+            document.getElementById('edit-tipo_operacion').value = arc.tipo_operacion;
+            document.getElementById('edit-sn').value = arc.sn;
+            document.getElementById('edit-modelo').value = arc.modelo;
+            document.getElementById('edit-estado').value = arc.estado;
+            document.getElementById('edit-fecha_arc').value = arc.fecha_arc;
+            document.getElementById('edit-fecha_proximo_arc').value = arc.fecha_proximo_arc;
+            document.getElementById('edit-tipo_arc').value = arc.tipo_arc;
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        async function saveEdit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const data = {
+                matricula: document.getElementById('edit-matricula').value.toUpperCase(),
+                tipo_operacion: document.getElementById('edit-tipo_operacion').value,
+                sn: document.getElementById('edit-sn').value,
+                modelo: document.getElementById('edit-modelo').value,
+                estado: document.getElementById('edit-estado').value,
+                fecha_arc: document.getElementById('edit-fecha_arc').value,
+                fecha_proximo_arc: document.getElementById('edit-fecha_proximo_arc').value,
+                tipo_arc: document.getElementById('edit-tipo_arc').value
+            };
+
+            const res = await fetch(`/api/arcs/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                closeEditModal();
+                showToast('Cambios guardados', 'success');
+                loadArcs();
+            } else {
+                showToast('Error al guardar', 'error');
+            }
         }
 
         async function deleteArc(id) {
             if (!confirm('¿Eliminar este ARC?')) return;
             await fetch(`/api/arcs/${id}`, {method: 'DELETE'});
-            loadArcs();
             showToast('ARC eliminado', 'success');
+            loadArcs();
         }
 
         async function importExcel() {
             const fileInput = document.getElementById('excel-file');
             const file = fileInput.files[0];
             if (!file) { showToast('Selecciona un archivo', 'error'); return; }
-
             const formData = new FormData();
             formData.append('file', file);
-
             const res = await fetch('/api/import', { method: 'POST', body: formData });
             const result = await res.json();
             if (result.status === 'ok') {
@@ -1320,9 +1294,7 @@
             }
         }
 
-        function exportArcs() {
-            window.location.href = '/api/export';
-        }
+        function exportArcs() { window.location.href = '/api/export'; }
 
         function showToast(message, type) {
             const toast = document.createElement('div');
@@ -1331,6 +1303,11 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
+
+        // Close modal on overlay click
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
     </script>
 </body>
 </html>
