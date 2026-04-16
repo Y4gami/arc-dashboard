@@ -1225,7 +1225,7 @@
                         <div class="list-modelo">${arc.modelo}</div>
                         <div class="list-sn">${arc.sn}</div>
                         <div>${arc.tipo_operacion}</div>
-                        <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}" style="font-size:0.6rem">${arc.tipo_arc}</span></div>
+                        <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}">${arc.tipo_arc}</span></div>
                         <div>${formatDate(arc.fecha_proximo_arc)}</div>
                         <div>
                             <select class="estado-select" onchange="changeEstado(${arc.id}, this.value)" style="background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 0.2rem 0.4rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: inherit;">
@@ -1234,7 +1234,7 @@
                                 <option value="Terminado" ${arc.estado === 'Terminado' ? 'selected' : ''}>Terminado</option>
                             </select>
                         </div>
-                        <div><span class="days-badge days-${cls}" style="font-size:0.75rem; padding:0.25rem 0.5rem;">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
+                        <div><span class="days-badge days-${cls}">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
                     </div>
                     `;
                 }).join('')}
