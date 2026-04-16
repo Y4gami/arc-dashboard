@@ -398,7 +398,7 @@
 
         .list-header {
             display: grid;
-            grid-template-columns: 140px 2fr 100px 1fr 100px 120px 90px 100px;
+            grid-template-columns: 130px 2fr 80px 1fr 110px 130px 100px 90px;
             gap: 1rem;
             padding: 1rem 1.5rem;
             background: var(--bg-primary);
@@ -411,7 +411,7 @@
 
         .list-row {
             display: grid;
-            grid-template-columns: 140px 2fr 100px 1fr 100px 120px 90px 100px;
+            grid-template-columns: 130px 2fr 80px 1fr 110px 130px 100px 90px;
             gap: 1rem; padding: 1rem 1.5rem;
             align-items: center;
             border-bottom: 1px solid var(--border);
@@ -980,6 +980,16 @@
             return colors[Math.abs(hash) % colors.length];
         }
 
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
+
         function renderDashboard() {
             renderStats();
             renderCharts();
@@ -1140,11 +1150,11 @@
                         </div>
                         <div class="arc-detail">
                             <span class="arc-detail-label">Fecha ARC</span>
-                            <span class="arc-detail-value">${arc.fecha_arc}</span>
+                            <span class="arc-detail-value">${formatDate(arc.fecha_arc)}</span>
                         </div>
                         <div class="arc-detail">
                             <span class="arc-detail-label">Próximo ARC</span>
-                            <span class="arc-detail-value">${arc.fecha_proximo_arc}</span>
+                            <span class="arc-detail-value">${formatDate(arc.fecha_proximo_arc)}</span>
                         </div>
                         ${arc.estado !== 'Terminado' ? `
                         <div class="arc-progress">
@@ -1191,7 +1201,7 @@
                         <div class="list-sn">${arc.sn}</div>
                         <div>${arc.tipo_operacion}</div>
                         <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}" style="font-size:0.6rem">${arc.tipo_arc}</span></div>
-                        <div>${arc.fecha_proximo_arc}</div>
+                        <div>${formatDate(arc.fecha_proximo_arc)}</div>
                         <div><span class="arc-badge badge-${estadoClass}" style="font-size:0.6rem">${arc.estado}</span></div>
                         <div><span class="days-badge days-${cls}" style="font-size:0.75rem; padding:0.25rem 0.5rem;">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
                     </div>
@@ -1205,7 +1215,7 @@
                 const days = getDaysLeft(arc.fecha_proximo_arc);
                 const cls = getUrgencyClass(days, arc.estado);
                 const date = new Date(arc.fecha_proximo_arc);
-                const day = date.getDate();
+                const day = String(date.getDate()).padStart(2, '0');
                 const month = date.toLocaleDateString('es-ES', { month: 'short' }).toUpperCase();
 
                 return `
