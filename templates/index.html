@@ -789,6 +789,31 @@
         </div>
     </div>
 
+    <!-- Terminado Modal -->
+    <div id="terminado-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>✅ Completar ARC</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">Al marcar como Terminado, introduce la nueva Fecha de inicio y la nueva Fecha de próximo ARC. El estado volverá a <strong>Sin Iniciar</strong>.</p>
+            <form id="terminado-form" onsubmit="saveTerminado(event)">
+                <input type="hidden" id="terminado-id">
+                <div class="form-grid" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label>Fecha de inicio del nuevo ARC *</label>
+                        <input type="date" id="terminado-fecha_arc" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha próximo ARC *</label>
+                        <input type="date" id="terminado-fecha_proximo_arc" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeTerminadoModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">💾 Guardar y reiniciar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Edit Modal -->
     <div id="edit-modal" class="modal-overlay hidden">
         <div class="modal">
@@ -1202,7 +1227,13 @@
                         <div>${arc.tipo_operacion}</div>
                         <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}" style="font-size:0.6rem">${arc.tipo_arc}</span></div>
                         <div>${formatDate(arc.fecha_proximo_arc)}</div>
-                        <div><span class="arc-badge badge-${estadoClass}" style="font-size:0.6rem">${arc.estado}</span></div>
+                        <div>
+                            <select class="estado-select" onchange="changeEstado(${arc.id}, this.value)" style="background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: inherit;">
+                                <option value="Sin Iniciar" ${arc.estado === 'Sin Iniciar' ? 'selected' : ''}>Sin Iniciar</option>
+                                <option value="En progreso" ${arc.estado === 'En progreso' ? 'selected' : ''}>En Progreso</option>
+                                <option value="Terminado" ${arc.estado === 'Terminado' ? 'selected' : ''}>Terminado</option>
+                            </select>
+                        </div>
                         <div><span class="days-badge days-${cls}" style="font-size:0.75rem; padding:0.25rem 0.5rem;">${arc.estado === 'Terminado' ? '✓' : days+'d'}</span></div>
                     </div>
                     `;
@@ -1251,6 +1282,89 @@
 
         function closeEditModal() {
             document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function changeEstado(id, newEstado) {
+            if (newEstado === 'Terminado') {
+                openTerminadoModal(id);
+            } else {
+                updateEstado(id, newEstado);
+            }
+        }
+
+        function openTerminadoModal(id) {
+            document.getElementById('terminado-id').value = id;
+            document.getElementById('terminado-fecha_arc').value = '';
+            document.getElementById('terminado-fecha_proximo_arc').value = '';
+            document.getElementById('terminado-modal').classList.remove('hidden');
+        }
+
+        function closeTerminadoModal() {
+            document.getElementById('terminado-modal').classList.add('hidden');
+            // Reset the select to previous value
+            loadArcs();
+        }
+
+        async function saveTerminado(e) {
+            e.preventDefault();
+            const id = document.getElementById('terminado-id').value;
+            const fecha_arc = document.getElementById('terminado-fecha_arc').value;
+            const fecha_proximo_arc = document.getElementById('terminado-fecha_proximo_arc').value;
+
+            if (!fecha_arc || !fecha_proximo_arc) {
+                showToast('Completa ambas fechas', 'error');
+                return;
+            }
+
+            // Get current arc data
+            const arc = arcs.find(a => a.id === parseInt(id));
+            if (!arc) return;
+
+            const data = {
+                matricula: arc.matricula,
+                tipo_operacion: arc.tipo_operacion,
+                sn: arc.sn,
+                modelo: arc.modelo,
+                fecha_arc: fecha_arc,
+                fecha_proximo_arc: fecha_proximo_arc,
+                tipo_arc: arc.tipo_arc,
+                estado: 'Sin Iniciar'  // Reset to Sin Iniciar after completing
+            };
+
+            const res = await fetch(`/api/arcs/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                closeTerminadoModal();
+                showToast('ARC completado → Nueva fecha guardada', 'success');
+                loadArcs();
+            } else {
+                showToast('Error al guardar', 'error');
+            }
+        }
+
+        async function updateEstado(id, estado) {
+            const arc = arcs.find(a => a.id === id);
+            if (!arc) return;
+            const data = {
+                matricula: arc.matricula,
+                tipo_operacion: arc.tipo_operacion,
+                sn: arc.sn,
+                modelo: arc.modelo,
+                fecha_arc: arc.fecha_arc,
+                fecha_proximo_arc: arc.fecha_proximo_arc,
+                tipo_arc: arc.tipo_arc,
+                estado: estado
+            };
+            await fetch(`/api/arcs/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            loadArcs();
         }
 
         async function saveEdit(e) {
