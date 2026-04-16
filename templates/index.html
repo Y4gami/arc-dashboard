@@ -320,16 +320,16 @@
         .badge-inicial { background: #4f46e5; color: #ffffff; }
         .badge-primera { background: #d97706; color: #ffffff; }
         .badge-segunda { background: #db2777; color: #ffffff; }
-        .badge-sin-iniciar { background: #475569; color: #ffffff; }
-        .badge-en-progreso { background: #d97706; color: #ffffff; }
-        .badge-terminado { background: #059669; color: #ffffff; }
+        .badge-sin-iniciar { background: #0891b2; color: #ffffff; }
+        .badge-en-progreso { background: #ea580c; color: #ffffff; }
+        .badge-terminado { background: #16a34a; color: #ffffff; }
 
         [data-theme="dark"] .badge-inicial { background: #6366f1; color: #ffffff; }
         [data-theme="dark"] .badge-primera { background: #f59e0b; color: #ffffff; }
         [data-theme="dark"] .badge-segunda { background: #ec4899; color: #ffffff; }
-        [data-theme="dark"] .badge-sin-iniciar { background: #64748b; color: #ffffff; }
-        [data-theme="dark"] .badge-en-progreso { background: #f59e0b; color: #ffffff; }
-        [data-theme="dark"] .badge-terminado { background: #10b981; color: #ffffff; }
+        [data-theme="dark"] .badge-sin-iniciar { background: #06b6d4; color: #ffffff; }
+        [data-theme="dark"] .badge-en-progreso { background: #f97316; color: #ffffff; }
+        [data-theme="dark"] .badge-terminado { background: #22c55e; color: #ffffff; }
 
         .arc-card-body { padding: 1.25rem; }
 
@@ -1228,7 +1228,7 @@
                         <div><span class="arc-badge badge-${arc.tipo_arc === 'Inicial' ? 'inicial' : arc.tipo_arc === 'Primera Prórroga' ? 'primera' : 'segunda'}" style="font-size:0.6rem">${arc.tipo_arc}</span></div>
                         <div>${formatDate(arc.fecha_proximo_arc)}</div>
                         <div>
-                            <select class="estado-select" onchange="changeEstado(${arc.id}, this.value)" style="background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: inherit;">
+                            <select class="estado-select" onchange="changeEstado(${arc.id}, this.value)" style="background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 0.2rem 0.4rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; color: inherit;">
                                 <option value="Sin Iniciar" ${arc.estado === 'Sin Iniciar' ? 'selected' : ''}>Sin Iniciar</option>
                                 <option value="En progreso" ${arc.estado === 'En progreso' ? 'selected' : ''}>En Progreso</option>
                                 <option value="Terminado" ${arc.estado === 'Terminado' ? 'selected' : ''}>Terminado</option>
